@@ -64,7 +64,7 @@ namespace DotDecentralized.Tests
             var options = new JsonSerializerOptions();
             options.Converters.Add(new ServiceConverterFactory());
 
-            Service service = JsonSerializer.Deserialize<Service>(TestService1, options);
+            Service? service = JsonSerializer.Deserialize<Service>(TestService1, options);
             Assert.NotNull(service);
 
             var roundTrippedJson = JsonSerializer.Serialize(service, options);
@@ -80,12 +80,10 @@ namespace DotDecentralized.Tests
         [Fact]
         public void RoundtripOneUriContext()
         {
-            const string OneUriContext = @"{""@context"": ""https://w3id.org/future-method/v1""}";
-
             var options = new JsonSerializerOptions();
             options.Converters.Add(new JsonLdContextConverter());
 
-            Context context = JsonSerializer.Deserialize<Context>(OneUriContext, options);
+            Context? context = JsonSerializer.Deserialize<Context>(OneUriContext, options);
             Assert.NotNull(context);
 
             var roundTrippedJson = JsonSerializer.Serialize(context, options);
@@ -104,7 +102,7 @@ namespace DotDecentralized.Tests
             var options = new JsonSerializerOptions();
             options.Converters.Add(new JsonLdContextConverter());
 
-            Context context = JsonSerializer.Deserialize<Context>(CollectionUriContext, options);
+            Context? context = JsonSerializer.Deserialize<Context>(CollectionUriContext, options);
             Assert.NotNull(context);
 
             var roundTrippedJson = JsonSerializer.Serialize(context, options);
@@ -123,7 +121,7 @@ namespace DotDecentralized.Tests
             var options = new JsonSerializerOptions();
             options.Converters.Add(new JsonLdContextConverter());
 
-            Context context = JsonSerializer.Deserialize<Context>(ComplexContext1, options);
+            Context? context = JsonSerializer.Deserialize<Context>(ComplexContext1, options);
             Assert.NotNull(context);
 
             var roundTrippedJson = JsonSerializer.Serialize(context, options);

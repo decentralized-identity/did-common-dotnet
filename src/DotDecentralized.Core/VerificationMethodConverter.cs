@@ -24,7 +24,7 @@ namespace DotDecentralized.Core.Did
             { "publicKeyBase58", new Func<string, JsonSerializerOptions, PublicKeyBase58>((json, _) => new PublicKeyBase58(json)) },
             { "publicKeyPem", new Func<string, JsonSerializerOptions, PublicKeyPem>((json, _) => new PublicKeyPem(json)) },
             { "publicKeyHex", new Func<string, JsonSerializerOptions, PublicKeyHex>((json, _) => new PublicKeyHex(json)) },
-            { "publicKeyJwk", new Func<string, JsonSerializerOptions, PublicKeyJwk>((json, options) => JsonSerializer.Deserialize<PublicKeyJwk>(json, options)) }
+            { "publicKeyJwk", new Func<string, JsonSerializerOptions, PublicKeyJwk>((json, options) => JsonSerializer.Deserialize<PublicKeyJwk>(json, options)!) }
         }.ToImmutableDictionary();
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace DotDecentralized.Core.Did
                 var element = jsonDocument.RootElement;
 
                 //First the values are filled to the object.
-                verificationMethod.Id = new Uri(element.GetProperty("id").GetString());
+                verificationMethod.Id = new Uri(element.GetProperty("id").GetString()!);
                 verificationMethod.Controller = element.GetProperty("controller").GetString();
                 verificationMethod.Type = element.GetProperty("type").GetString();
 
@@ -73,10 +73,11 @@ namespace DotDecentralized.Core.Did
                 //function is used.
                 foreach(var serviceTypeDiscriminator in TypeMap.Keys)
                 {
+                    Func<string, JsonSerializerOptions, KeyFormat> keyFunc;
                     if(element.TryGetProperty(serviceTypeDiscriminator, out JsonElement serviceTypeElement)
-                        && TypeMap.TryGetValue(serviceTypeDiscriminator, out Func<string, JsonSerializerOptions, KeyFormat> keyFunc))
+                        && TypeMap.TryGetValue(serviceTypeDiscriminator, out keyFunc!))
                     {
-                        verificationMethod.KeyFormat = keyFunc(serviceTypeElement.ToString(), options);
+                        verificationMethod.KeyFormat = keyFunc(serviceTypeElement.ToString()!, options);
                         return verificationMethod;
                     }
                 }

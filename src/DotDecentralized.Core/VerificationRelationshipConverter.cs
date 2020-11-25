@@ -25,7 +25,7 @@ namespace DotDecentralized.Core.Did
                     BindingFlags.Instance | BindingFlags.Public,
                     binder: null,
                     args: null,
-                    culture: null);
+                    culture: null)!;
         }
     }
 
@@ -34,7 +34,7 @@ namespace DotDecentralized.Core.Did
     /// Converts a <see cref="VerificationRelationship"/> to or from JSON.
     /// </summary>
     /// <typeparam name="TVerificationRelationship">The type of <see cref="VerificationRelationship"/> to convert.</typeparam>
-    public class VerificationRelationshipConverter<TVerificationRelationship>: JsonConverter<TVerificationRelationship> where TVerificationRelationship: VerificationRelationship
+    public class VerificationRelationshipConverter<TVerificationRelationship>: JsonConverter<TVerificationRelationship> where TVerificationRelationship : VerificationRelationship
     {
         /// <inheritdoc/>
         public override TVerificationRelationship Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -47,10 +47,10 @@ namespace DotDecentralized.Core.Did
             //TODO: Need to add "JwsVerificationKey2020" and handle like verification relationship?
             //This is an extension: https://identity.foundation/sidetree/spec/v0.1.0/
             // https://w3c-ccg.github.io/ld-cryptosuite-registry/
-            object constructorParameter = string.Empty;
+            object? constructorParameter = null;
             if(reader.TokenType == JsonTokenType.String)
             {
-                constructorParameter = reader.GetString();
+                constructorParameter = reader.GetString() ?? string.Empty;
             }
             else if(reader.TokenType == JsonTokenType.StartObject)
             {
@@ -62,7 +62,7 @@ namespace DotDecentralized.Core.Did
                 ThrowHelper.ThrowJsonException();
             }
 
-            return (TVerificationRelationship)Activator.CreateInstance(typeof(TVerificationRelationship), new object[] { constructorParameter });
+            return (TVerificationRelationship)Activator.CreateInstance(typeof(TVerificationRelationship), new object[] { constructorParameter! })!;
         }
 
 
@@ -86,7 +86,7 @@ namespace DotDecentralized.Core.Did
         }
 
 
-        private static JsonConverter<TVerificationMethod> GetKeyConverter<TVerificationMethod>(JsonSerializerOptions options) where TVerificationMethod: VerificationMethod
+        private static JsonConverter<TVerificationMethod> GetKeyConverter<TVerificationMethod>(JsonSerializerOptions options) where TVerificationMethod : VerificationMethod
         {
             return (JsonConverter<TVerificationMethod>)options.GetConverter(typeof(TVerificationMethod));
         }

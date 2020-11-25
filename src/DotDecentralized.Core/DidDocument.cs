@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -96,7 +97,7 @@ namespace DotDecentralized.Core.Did
 
 
         /// <inheritdoc/>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if(obj is null)
             {
@@ -118,7 +119,7 @@ namespace DotDecentralized.Core.Did
 
 
         /// <inheritdoc/>
-        public bool Equals(DidDocument other)
+        public bool Equals(DidDocument? other)
         {
             if(other == null)
             {
@@ -126,14 +127,14 @@ namespace DotDecentralized.Core.Did
             }
 
             return Context == other.Context
-                && Id == other.Id
-                && Controller.SequenceEqual(other.Controller)
-                && VerificationMethod.SequenceEqual(other.VerificationMethod)
-                && Authentication.SequenceEqual(other.Authentication)
-                && AssertionMethod.SequenceEqual(other.AssertionMethod)
-                && KeyAgreement.SequenceEqual(other.KeyAgreement)
-                && CapabilityDelegation.SequenceEqual(other.CapabilityDelegation)
-                && Service.SequenceEqual(other.Service);
+                && Id == other?.Id
+                && (Controller?.SequenceEqual(other!.Controller!)).GetValueOrDefault()
+                && (VerificationMethod?.SequenceEqual(other!.VerificationMethod!)).GetValueOrDefault()
+                && (Authentication?.SequenceEqual(other!.Authentication!)).GetValueOrDefault()
+                && (AssertionMethod?.SequenceEqual(other!.AssertionMethod!)).GetValueOrDefault()
+                && (KeyAgreement?.SequenceEqual(other!.KeyAgreement!)).GetValueOrDefault()
+                && (CapabilityDelegation?.SequenceEqual(other!.CapabilityDelegation!)).GetValueOrDefault()
+                && (Service?.SequenceEqual(other!.Service!)).GetValueOrDefault();
         }
 
 

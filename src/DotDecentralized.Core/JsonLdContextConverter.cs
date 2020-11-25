@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -32,17 +33,25 @@ namespace DotDecentralized.Core.Did
 
             if(tokenType == JsonTokenType.String)
             {
-                context.Contexes.Add(reader.GetString());
+                var ctx = reader.GetString();
+                if(ctx != null)
+                {
+                    context.Contexes.Add(ctx);
+                }
+
                 return context;
             }
 
             if(tokenType == JsonTokenType.StartArray)
             {
                 var strList = JsonSerializer.Deserialize<string[]>(ref reader);
-                for(int i = 0; i < strList.Length; i++)
+                if(strList != null)
                 {
-                    string s = strList[i];
-                    context.Contexes.Add(s);
+                    for(int i = 0; i < strList.Length; i++)
+                    {
+                        string s = strList[i];
+                        context.Contexes.Add(s);
+                    }
                 }
 
                 return context;
@@ -67,8 +76,11 @@ namespace DotDecentralized.Core.Did
                 }
 
                 _ = reader.Read();
-                object val = ExtractValue(ref reader, propertyName, options);
-                context.AdditionalData.Add(propertyName, val);
+                object? val = ExtractValue(ref reader, propertyName, options);
+                if(val != null)
+                {
+                    context.AdditionalData.Add(propertyName, val);
+                }
             }
 
             return context;
@@ -99,7 +111,8 @@ namespace DotDecentralized.Core.Did
         }
 
 
-        private static object ExtractValue(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options)
+        [return: MaybeNull]
+        private static object? ExtractValue(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options)
         {
             //https://github.com/dotnet/corefx/blob/master/src/System.Text.Json/src/System/Text/Json/Serialization/Converters/JsonValueConverterKeyValuePair.cs
             switch(reader.TokenType)
@@ -114,8 +127,8 @@ namespace DotDecentralized.Core.Did
                     return false;
                 case JsonTokenType.True:
                     return true;
-                /*case JsonTokenType.Null:
-                    return null;*/
+                case JsonTokenType.Null:
+                    return null;
                 case JsonTokenType.Number:
                     if(reader.TryGetInt64(out var result))
                     {

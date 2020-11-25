@@ -168,8 +168,8 @@ namespace DotDecentralized.Tests
                     }
                 };
 
-                var didDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
-                Assert.NotNull(didDocument.Id);
+                DidDocument? didDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
+                Assert.NotNull(didDocument?.Id);
             }
             catch(Exception ex)
             {
@@ -205,10 +205,10 @@ namespace DotDecentralized.Tests
                 }
             };
 
-            var didDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
+            DidDocument? didDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
             var serializedDidDocument = JsonSerializer.Serialize(didDocument);
 
-            Assert.NotNull(didDocument.Id);
+            Assert.NotNull(didDocument?.Id);
             Assert.NotNull(serializedDidDocument);
         }
 
@@ -238,8 +238,8 @@ namespace DotDecentralized.Tests
                 }
             };
 
-            var didDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
-            Assert.NotNull(didDocument.Id);
+            DidDocument? didDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
+            Assert.NotNull(didDocument?.Id);
         }
     }
 }

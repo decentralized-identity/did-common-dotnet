@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
@@ -38,15 +39,18 @@ namespace DotDecentralized.Core.Did
 
 
         /// <inheritdoc/>
+        [return: NotNull]
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
         {
+            //This will throw rather than throw if creating instance fails.
+            //If type could be Nullable<T>, then .CreateInstance could also return null.
             return (JsonConverter)Activator.CreateInstance(
                 typeof(ServiceConverter<>)
                     .MakeGenericType(new Type[] { typeToConvert }),
                     BindingFlags.Instance | BindingFlags.Public,
                     binder: null,
                     args: new object[] { TypeMap },
-                    culture: null);
+                    culture: null)!;
         }
     }
 
@@ -74,6 +78,7 @@ namespace DotDecentralized.Core.Did
 
 
         /// <inheritdoc/>
+        [return: NotNull]
         public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if(reader.TokenType != JsonTokenType.StartObject)
@@ -95,7 +100,7 @@ namespace DotDecentralized.Core.Did
 
                 if(!string.IsNullOrEmpty(serviceType) && TypeMap.TryGetValue(serviceType, out var targetType))
                 {
-                    return (T)JsonSerializer.Deserialize(ref elementStartPosition, targetType);
+                    return (T)JsonSerializer.Deserialize(ref elementStartPosition, targetType)!;
                 }
 
                 //TODO: Here put to AdditionalData is ther was not a type on a map? Do it via a default

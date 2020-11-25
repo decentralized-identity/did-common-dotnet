@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace DotDecentralized.Core
@@ -11,6 +12,7 @@ namespace DotDecentralized.Core
     /// and https://github.com/dotnet/corefx/blob/master/src/System.Text.Json/src/System/Text/Json/ThrowHelper.Serialization.cs .</remarks>
     public static class ThrowHelper
     {
+        [DoesNotReturn]
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowJsonException()
         {
