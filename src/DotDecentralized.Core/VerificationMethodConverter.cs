@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -65,12 +66,16 @@ namespace DotDecentralized.Core.Did
                 var element = jsonDocument.RootElement;
 
                 //First the values are filled to the object.
-                verificationMethod.Id = new Uri(element.GetProperty("id").GetString()!);
+                verificationMethod.Id = element.GetProperty("id").GetString()!;
                 verificationMethod.Controller = element.GetProperty("controller").GetString();
                 verificationMethod.Type = element.GetProperty("type").GetString();
 
-                //Then the known key format tags are tested and its corresponding transormation
-                //function is used.
+                //Then the known key format tags are tested and its corresponding transformation
+                //function is used. This is done like this because JSON can contain any format tags
+                //supported by DID Core or registry or extended in custom build. So they need to
+                //be tried one-by-one.
+                //
+                //N.B.! Or find a way to read the next property directly!
                 foreach(var serviceTypeDiscriminator in TypeMap.Keys)
                 {
                     Func<string, JsonSerializerOptions, KeyFormat> keyFunc;
@@ -83,15 +88,14 @@ namespace DotDecentralized.Core.Did
                 }
             }
 
-            //TODO: Throw a more descriptive exception.
-            throw new JsonException();
+            throw new JsonException($"{nameof(VerificationMethodConverter.Read)} could not find a converter for \"{verificationMethod.Type}\".");
         }
 
 
         /// <inheritdoc/>
         public override void Write(Utf8JsonWriter writer, VerificationMethod value, JsonSerializerOptions options)
         {
-            //TODO: Write a KeyFormat Converter or multiple KeyFormat converters? Likely a dictionary of types as key as for input.
+            //TODO: Write use TypeMap as KeyFormat Converter so that these need not to be hardcoded like this.
             writer.WriteStartObject();
             writer.WriteString("id", value?.Id?.ToString());
             writer.WriteString("controller", value?.Controller);
@@ -117,7 +121,12 @@ namespace DotDecentralized.Core.Did
                     writer.WriteString("y", jwk.Y);
                 }
                 writer.WriteString("kty", jwk.Kty);
-                writer.WriteString("kid", jwk.Kid);
+
+                if(!string.IsNullOrWhiteSpace(jwk.Kid))
+                {
+                    writer.WriteString("kid", jwk.Kid);
+                }
+
                 writer.WriteEndObject();
             }
 

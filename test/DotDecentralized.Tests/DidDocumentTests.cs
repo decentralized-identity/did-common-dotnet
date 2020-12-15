@@ -94,7 +94,6 @@ namespace DotDecentralized.Tests
               }]
             }";
 
-
         /// <summary>
         /// Getting a hash of an empty document. This should not throw.
         /// </summary>
@@ -155,26 +154,27 @@ namespace DotDecentralized.Tests
                 throw new ArgumentNullException(nameof(_));
             }
 
-            try
+            var options = new JsonSerializerOptions
             {
-                var options = new JsonSerializerOptions
+                IgnoreNullValues = true,
+                Converters =
                 {
-                    Converters =
-                    {
-                        new VerificationRelationshipConverterFactory(),
-                        new VerificationMethodConverter(),
-                        new ServiceConverterFactory(),
-                        new JsonLdContextConverter()
-                    }
-                };
+                    new VerificationRelationshipConverterFactory(),
+                    new VerificationMethodConverter(),
+                    new ServiceConverterFactory(),
+                    new JsonLdContextConverter()
+                }
+            };
 
-                DidDocument? didDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
-                Assert.NotNull(didDocument?.Id);
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            DidDocument? didDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
+            var roundTrippedDidDocument = JsonSerializer.Serialize(didDocument, options);
+            Assert.NotNull(didDocument?.Id);
+            Assert.NotNull(roundTrippedDidDocument);
+
+            var comparer = new JsonElementComparer();
+            using var doc1 = JsonDocument.Parse(didDocumentFileContents);
+            using var doc2 = JsonDocument.Parse(roundTrippedDidDocument);
+            Assert.True(comparer.Equals(doc1.RootElement, doc2.RootElement));
         }
 
 
@@ -196,6 +196,7 @@ namespace DotDecentralized.Tests
             typeMap.Add("VerifiableCredentialService", typeof(VerifiableCredentialService));
             var options = new JsonSerializerOptions
             {
+                IgnoreNullValues = true,
                 Converters =
                 {
                     new VerificationRelationshipConverterFactory(),
@@ -206,10 +207,14 @@ namespace DotDecentralized.Tests
             };
 
             DidDocument? didDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
-            var serializedDidDocument = JsonSerializer.Serialize(didDocument);
-
+            var roundTrippedDidDocument = JsonSerializer.Serialize(didDocument, options);
             Assert.NotNull(didDocument?.Id);
-            Assert.NotNull(serializedDidDocument);
+            Assert.NotNull(roundTrippedDidDocument);
+
+            var comparer = new JsonElementComparer();
+            using var doc1 = JsonDocument.Parse(didDocumentFileContents);
+            using var doc2 = JsonDocument.Parse(roundTrippedDidDocument);
+            Assert.True(comparer.Equals(doc1.RootElement, doc2.RootElement));
         }
 
 
@@ -229,6 +234,7 @@ namespace DotDecentralized.Tests
 
             var options = new JsonSerializerOptions
             {
+                IgnoreNullValues = true,
                 Converters =
                 {
                     new VerificationRelationshipConverterFactory(),
@@ -239,7 +245,14 @@ namespace DotDecentralized.Tests
             };
 
             DidDocument? didDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
+            var roundTrippedDidDocument = JsonSerializer.Serialize(didDocument, options);
             Assert.NotNull(didDocument?.Id);
+            Assert.NotNull(roundTrippedDidDocument);
+
+            var comparer = new JsonElementComparer();
+            using var doc1 = JsonDocument.Parse(didDocumentFileContents);
+            using var doc2 = JsonDocument.Parse(roundTrippedDidDocument);
+            Assert.True(comparer.Equals(doc1.RootElement, doc2.RootElement));
         }
     }
 }

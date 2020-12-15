@@ -333,7 +333,7 @@ namespace DotDecentralized.Core.Did
     public class VerificationMethod
     {
         [JsonPropertyName("id")]
-        public Uri? Id { get; set; }
+        public string? Id { get; set; }
 
         [JsonPropertyName("type")]
         public string? Type { get; set; }

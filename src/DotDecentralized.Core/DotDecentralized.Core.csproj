@@ -10,8 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.7.1" />
-    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
+    <PackageReference Include="System.Text.Json" Version="5.0.0" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties testdiddocuments_4minimalselfmanageddiddocument_1json__JsonSchema="diddoc-schema.json" /></VisualStudio></ProjectExtensions>
