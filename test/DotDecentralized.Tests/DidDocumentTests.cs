@@ -1,4 +1,5 @@
 using DotDecentralized.Core.Did;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -93,6 +94,7 @@ namespace DotDecentralized.Tests
                 ""serviceEndpoint"": ""http://auth.example.com/did:example:123456789abcdefg""
               }]
             }";
+
 
         /// <summary>
         /// Getting a hash of an empty document. This should not throw.

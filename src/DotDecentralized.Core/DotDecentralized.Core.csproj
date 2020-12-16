@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Multitargeting requires some slight changes to current code on GetHash and some other places. Not done currently. -->
   <PropertyGroup>
+    <!-- <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks> -->
     <TargetFramework>net5.0</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>9.0</LangVersion>
@@ -8,12 +10,20 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
+  <!-- Needed for multi-targeting. -->
+  <!--
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Nullable" Version="1.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  -->
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.8.0" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.8.9" />
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
     <PackageReference Include="System.Text.Json" Version="5.0.0" />
   </ItemGroup>
-
-  <ProjectExtensions><VisualStudio><UserProperties testdiddocuments_4minimalselfmanageddiddocument_1json__JsonSchema="diddoc-schema.json" /></VisualStudio></ProjectExtensions>
-
 </Project>

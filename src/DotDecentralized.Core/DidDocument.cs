@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -222,6 +222,43 @@ namespace DotDecentralized.Core.Did
         public const string X25519KeyAgreementKey2019 = "x25519KeyAgreementKey2019";
     }
 
+
+    /// <summary>
+    /// Constants for various cryptographic algorithms.
+    /// </summary>
+    public static class CryptographyAlgorithmConstants
+    {
+        /// <summary>
+        /// EdDSA constants.
+        /// </summary>
+        public static class EdDsa
+        {
+            public const string Algorithm = "EdDSA";
+
+            /// <summary>
+            /// By definition, see at <see href="https://tools.ietf.org/html/rfc8037#section-2"/>.
+            /// </summary>
+            public const string KeyType = "OKP";
+
+            /// <summary>
+            /// By definition, see at <see href="https://tools.ietf.org/html/rfc8032#section-5.1.5"/>.
+            /// </summary>
+            public const int KeySizeInBytes = 32;
+
+            /// <summary>
+            /// EdDSA key curves.
+            /// </summary>
+            public static class Curves
+            {
+                //TODO: Add links to definitions as linked in https://tools.ietf.org/html/rfc8037#page-7.
+                public const string Ed25519 = "Ed25519";
+                public const string Ed448 = "Ed448";
+                public const string X25519 = "X25519";
+                public const string X448 = "X448";
+            }
+        }
+    }
+
     /// <summary>
     /// https://www.w3.org/TR/did-spec-registries/#verification-method-types
     /// </summary>
@@ -332,6 +369,7 @@ namespace DotDecentralized.Core.Did
     [DebuggerDisplay("VerificationMethod(Id = {Id})")]
     public class VerificationMethod
     {
+        //TODO: Could be FractionOrUri: Uri, or C# 10/F# discriminated union (like VerificationRelationship would be).
         [JsonPropertyName("id")]
         public string? Id { get; set; }
 
