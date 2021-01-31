@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
@@ -104,7 +104,7 @@ namespace DotDecentralized.Core.Did
                 }
 
                 //TODO: Here put to AdditionalData is ther was not a type on a map? Do it via a default
-                //Func<T> or straigt away?
+                //Func<T> or straight away?
             }
 
             //TODO: Throw a more descriptive exception. Also check that getting here fails the tests!

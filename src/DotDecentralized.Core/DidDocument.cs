@@ -9,6 +9,23 @@ using System.Text.Json.Serialization;
 
 namespace DotDecentralized.Core.Did
 {
+    //TODO: Probably the explanations from https://www.w3.org/TR/did-core/#architecture-overview
+    //should be added directly to DidDocument.
+
+    //These at https://www.w3.org/TR/did-core/#did-parameters could be extension methods
+    //and something like HasService(), GetService() so the core type remains open to extension
+    //and simple. These are extensible, although official DID registries are recommended.
+
+    //ICollection -> the order does not matter
+    //IList -> the order matters
+    //Consider using IReadOnly versions?
+
+    //Check optionality at https://www.w3.org/TR/did-core/#core-properties-for-a-did-document
+    //and decide if type checking should be used (now added ad-hoc) or optionality types
+    //or both. Type system checks would allow missing types during runtime, which may
+    //preferrable, but maybe it should be clear by way of using appropriate runtime
+    //types if they are not flagged by correctness-checking functions or exceptions?
+
     /// <summary>
     /// https://w3c.github.io/did-core/
     /// </summary>
@@ -21,13 +38,17 @@ namespace DotDecentralized.Core.Did
         [JsonPropertyName("@context")]
         public Context? Context { get; set; }
 
-        //TODO: Add alsoKnownAs attribute. How is it modelled in the document? Continue the one GH thread.
-
         /// <summary>
         /// https://w3c.github.io/did-core/#did-subject
         /// </summary>
         [JsonPropertyName("id")]
         public Uri? Id { get; set; }
+
+        //TODO: Make this a real class.
+        /// <summary>
+        /// https://w3c.github.io/did-core/#also-known-as.
+        /// </summary>
+        public string[]? AlsoKnownAs { get; set; }
 
         //TODO: Make this a Controller class, maybe with implicit and explicit conversion to and from string. Same for some key formats?
         /// <summary>
@@ -95,6 +116,8 @@ namespace DotDecentralized.Core.Did
         [JsonPropertyName("updated")]
         public DateTimeOffset? Updated { get; set; }*/
 
+        //TODO: The following is technical equality, also logical one should be considered.
+        //See at https://w3c.github.io/did-core/#also-known-as.
 
         /// <inheritdoc/>
         public override bool Equals(object? obj)
@@ -121,13 +144,14 @@ namespace DotDecentralized.Core.Did
         /// <inheritdoc/>
         public bool Equals(DidDocument? other)
         {
-            if(other == null)
+            if(other is null)
             {
                 return false;
             }
 
             return Context == other.Context
                 && Id == other?.Id
+                && (AlsoKnownAs?.SequenceEqual(other!.AlsoKnownAs!)).GetValueOrDefault()
                 && (Controller?.SequenceEqual(other!.Controller!)).GetValueOrDefault()
                 && (VerificationMethod?.SequenceEqual(other!.VerificationMethod!)).GetValueOrDefault()
                 && (Authentication?.SequenceEqual(other!.Authentication!)).GetValueOrDefault()
@@ -144,6 +168,11 @@ namespace DotDecentralized.Core.Did
             var hash = new HashCode();
             hash.Add(Context);
             hash.Add(Id);
+
+            for(int i = 0; i < AlsoKnownAs?.Length; ++i)
+            {
+                hash.Add(AlsoKnownAs[i]);
+            }
 
             for(int i = 0; i < Controller?.Length; ++i)
             {
@@ -210,7 +239,8 @@ namespace DotDecentralized.Core.Did
     }
 
 
-    //TODO: These not as nameof-attributes with the same and small strings as in the standard!
+    //TODO: These not as nameof-attributes since in the specification they start with
+    //small letter while capital letter is a .NET convention.
     /// <summary>
     /// https://w3c.github.io/did-core/#key-types-and-formats
     /// </summary>
@@ -224,7 +254,8 @@ namespace DotDecentralized.Core.Did
 
 
     /// <summary>
-    /// Constants for various cryptographic algorithms.
+    /// Constants for various cryptographic algorithms used in
+    /// decentralized identifiers and verifiable credentials.
     /// </summary>
     public static class CryptographyAlgorithmConstants
     {
@@ -259,6 +290,9 @@ namespace DotDecentralized.Core.Did
         }
     }
 
+
+    //TODO: These not as nameof-attributes since in the specification they start with
+    //small letter while capital letter is a .NET convention.
     /// <summary>
     /// https://www.w3.org/TR/did-spec-registries/#verification-method-types
     /// </summary>
@@ -341,7 +375,11 @@ namespace DotDecentralized.Core.Did
         }
     }
 
-
+    /// <summary>
+    /// https://www.w3.org/TR/did-core/#dfn-publickeyjwk
+    /// </summary>
+    /// <remarks>Note that must not contain private key information, such as 'd' field,
+    /// by DID Core specification.</remarks>
     [DebuggerDisplay("PublicKeyJwk(Crv = {Crv}, Kid = {Kid}, Kty = {Kty}, X = {X}, Y = {Y})")]
     public class PublicKeyJwk: KeyFormat
     {
@@ -454,6 +492,8 @@ namespace DotDecentralized.Core.Did
     }
 
 
+    //TODO: The extension data here is a quick'n'dirty way to allow for anything, e.g.
+    //nested complex types in case such are encountered.
     /// <summary>
     /// https://www.w3.org/TR/did-spec-registries/#context
     /// </summary>

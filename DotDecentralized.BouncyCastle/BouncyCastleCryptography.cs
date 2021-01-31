@@ -1,29 +1,52 @@
-using DotDecentralized.Core.Did;
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Signers;
 using System;
 
-namespace DotDecentralized.Core
+namespace DotDecentralized.BouncyCastle
 {
+    //TODO: It sould be decided what is the parameter format that goes into BouncyCastleCryptoProvider.
+    //In general in test there is a sample of DidCryptoProvider: ICryptoProvider that mimicks application
+    //specific loader that is an adapter to any custom implementations such as BouncyCastleCryptoProvider
+    //and so can transform parameters to any library specific format. But as this is a DID Core library
+    //specific implementation we control, we also can decide the parameter format.
+    //
+    //Preferably the format would be something that depends only on .NET platform, but there really
+    //isn't a widely accepted format.
+    //
+    //Also as for the return value format, DidCryptoProvider can wrap it to appropriate type that
+    //the other elements in the library can use and depend on.
+
+
     /// <summary>
     /// Defines a BouncyCastle specific <see cref="ICryptoProvider"/> implementation.
     /// See <seealso href="https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/wiki/Using-a-custom-CryptoProvider"/>.
-    /// </summary
+    /// </summary>
     public class BouncyCastleCryptoProvider: ICryptoProvider
     {
-        /// <inheritdoc/>
+        /// <summary>
+        /// Returns a cryptographic operator that supports the given <paramref name="algorithm"/>.
+        /// </summary>
+        /// <param name="algorithm">The algorithm to support.</param>
+        /// <param name="args">The arguments used to create the cryptographic operator.</param>
+        /// <returns>A cryptographic operator supporting the <paramref name="algorithm"/>.</returns>
         public object Create(string algorithm, params object[] args)
         {
             if(IsSupportedAlgorithm(algorithm, args))
             {
+                //TODO: Support more curves.
                 if(algorithm.Equals("EdDSA", StringComparison.OrdinalIgnoreCase))
                 {
                     var keyMaterial = args[0] as JsonWebKey;
                     if(keyMaterial != null)
                     {
-                        //TODO: Probably should check a case where both are defined (or some other combinations).
+                        //TODO: Should this allowed even if it increase hazard potential?
+                        if(keyMaterial.X != null && keyMaterial.Y != null)
+                        {
+                            throw new ArgumentException("Currently it is not allowed to create a signature provider that supports both signing and verifying at the same time.");
+                        }
+
                         AsymmetricKeyParameter? keyParameter = null;
                         if(keyMaterial.X != null)
                         {
@@ -37,7 +60,7 @@ namespace DotDecentralized.Core
                         }
                         else
                         {
-                            throw new ArgumentException("Key material needs to be provided");
+                            throw new ArgumentException("Key material needs to be provided.");
                         }
 
                         var securityKey = new BouncyCastleEdDsaSecurityKey(keyParameter, keyMaterial.Crv, this);
@@ -83,6 +106,14 @@ namespace DotDecentralized.Core
     /// </summary>
     public class BouncyCastleEdDsaSecurityKey: AsymmetricSecurityKey
     {
+        /// <summary>
+        /// A constructor for BouncyCastle specific asymmetric key material
+        /// that connects it to .NET framework and DotDecentralized
+        /// cryptographic facilities.
+        /// </summary>
+        /// <param name="keyParameter">The key material.</param>
+        /// <param name="curve">The curve this key material supports.</param>
+        /// <param name="cryptoProvider">The cryptographic provider this key material is tied to.</param>
         public BouncyCastleEdDsaSecurityKey(AsymmetricKeyParameter keyParameter, string curve, ICryptoProvider cryptoProvider)
         {
             CryptoProviderFactory.CustomCryptoProvider = cryptoProvider ?? new BouncyCastleCryptoProvider();
@@ -109,7 +140,7 @@ namespace DotDecentralized.Core
         public override PrivateKeyStatus PrivateKeyStatus => KeyParameter.IsPrivate ? PrivateKeyStatus.Exists : PrivateKeyStatus.DoesNotExist;
 
         /// <inheritdoc />
-        public override int KeySize => CryptographyAlgorithmConstants.EdDsa.KeySizeInBytes;
+        public override int KeySize => 32;
 
 
         /// <inheritdoc/>
@@ -135,7 +166,7 @@ namespace DotDecentralized.Core
     //TODO: See about validators: https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/wiki/ValidatingTokens.
 
     /// <summary>
-    /// Bla.
+    /// Signature and verification provider implemented by BouncyCastle.
     /// <see href = "https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/blob/ffa4e55e101978a27059ed8cf854388bc85450f3/src/Microsoft.IdentityModel.Tokens/AsymmetricSignatureProvider.cs" />.
     /// </summary>
     public class BouncyCastleEdDsaSignatureProvider: AsymmetricSignatureProvider
@@ -150,7 +181,8 @@ namespace DotDecentralized.Core
         /// </summary>
         /// <param name="key">The key material.</param>
         /// <param name="algorithm">The algorithm.</param>
-        public BouncyCastleEdDsaSignatureProvider(BouncyCastleEdDsaSecurityKey key, string algorithm): base(key, algorithm, willCreateSignatures: key.PrivateKeyStatus == PrivateKeyStatus.Exists)
+        public BouncyCastleEdDsaSignatureProvider(BouncyCastleEdDsaSecurityKey key, string algorithm):
+            base(key, algorithm, willCreateSignatures: key.PrivateKeyStatus == PrivateKeyStatus.Exists)
         {
             EdDsaKey = key;
         }
@@ -164,6 +196,12 @@ namespace DotDecentralized.Core
                 throw new ArgumentNullException(nameof(input));
             }
 
+            if(!WillCreateSignatures)
+            {
+                throw new InvalidOperationException("Private key is needed to create signatures.");
+            }
+
+            //TODO: Support more curves.
             if(EdDsaKey.Curve.Equals("Ed25519"))
             {
                 var privateKey = (Ed25519PrivateKeyParameters)EdDsaKey.KeyParameter;
@@ -191,6 +229,7 @@ namespace DotDecentralized.Core
                 throw new ArgumentNullException(nameof(signature));
             }
 
+            //TODO: Support more curves.
             if(EdDsaKey.Curve.Equals("Ed25519"))
             {
                 var publicKey = (Ed25519PublicKeyParameters)EdDsaKey.KeyParameter;

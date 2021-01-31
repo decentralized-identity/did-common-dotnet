@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotDecentralized.Core", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotDecentralized.Tests", "test\DotDecentralized.Tests\DotDecentralized.Tests.csproj", "{5C79FF8A-54D3-4443-A8D2-3CA5ACEA0D23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotDecentralized.Console", "DotDecentralized.Console\DotDecentralized.Console.csproj", "{C55D42D3-3904-405A-8D21-131450109242}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotDecentralized.BouncyCastle", "DotDecentralized.BouncyCastle\DotDecentralized.BouncyCastle.csproj", "{17260E6C-6887-4AD5-BDFF-304AB364B6FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +35,14 @@ Global
 		{5C79FF8A-54D3-4443-A8D2-3CA5ACEA0D23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C79FF8A-54D3-4443-A8D2-3CA5ACEA0D23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C79FF8A-54D3-4443-A8D2-3CA5ACEA0D23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C55D42D3-3904-405A-8D21-131450109242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C55D42D3-3904-405A-8D21-131450109242}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C55D42D3-3904-405A-8D21-131450109242}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C55D42D3-3904-405A-8D21-131450109242}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17260E6C-6887-4AD5-BDFF-304AB364B6FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17260E6C-6887-4AD5-BDFF-304AB364B6FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17260E6C-6887-4AD5-BDFF-304AB364B6FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17260E6C-6887-4AD5-BDFF-304AB364B6FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

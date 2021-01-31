@@ -21,6 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DotDecentralized.BouncyCastle\DotDecentralized.BouncyCastle.csproj" />
+    <ProjectReference Include="..\..\DotDecentralized.Console\DotDecentralized.Console.csproj" />
     <ProjectReference Include="..\..\src\DotDecentralized.Core\DotDecentralized.Core.csproj" />
   </ItemGroup>
 
