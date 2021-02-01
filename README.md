@@ -1,1 +1,1 @@
-# did-common-dotnet
+# did-comm-dotnet
