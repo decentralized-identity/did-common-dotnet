@@ -17,12 +17,13 @@ namespace DotDecentralized.Core.Did
     {
         /// <summary>
         /// TODO: What are the standardized services in https://www.w3.org/TR/did-spec-registries/ and could be here? The rest ought to be moved out.
+        /// When refactoring TODO, retain this observation: Service needs to be always handled unless the library user explicitly removes it.
         /// </summary>
-        public static ImmutableDictionary<string, Type> DefaultTypeMap => new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase).ToImmutableDictionary();
+        public static ImmutableDictionary<string, Type> DefaultTypeMap => new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase) { { nameof(Service), typeof(Service) } }.ToImmutableDictionary();
 
         private ImmutableDictionary<string, Type> TypeMap { get; }
 
-        public ServiceConverterFactory() : this(DefaultTypeMap) { }
+        public ServiceConverterFactory(): this(DefaultTypeMap) { }
 
         public ServiceConverterFactory(ImmutableDictionary<string, Type> typeMap)
         {
@@ -33,7 +34,9 @@ namespace DotDecentralized.Core.Did
         /// <inheritdoc/>
         public override bool CanConvert(Type typeToConvert)
         {
-            return TypeMap.Values.Any(s => s.IsAssignableFrom(typeToConvert));
+            //TODO: This requires there is Service derived on the TypeMap! So this may not be needed then? Either add here or have a fallback as a service
+            //with AdditonalData always if TypeMap fails and no Service is otherwise found?
+            return TypeMap.Values.Any(mappedServiceType => mappedServiceType.IsAssignableFrom(typeToConvert));
         }
 
 
@@ -98,17 +101,18 @@ namespace DotDecentralized.Core.Did
                 var serviceElement = jsonDocument.RootElement;
                 var serviceType = serviceElement.GetProperty(ServiceTypeDiscriminator).GetString();
 
-                if(!string.IsNullOrEmpty(serviceType) && TypeMap.TryGetValue(serviceType, out var targetType))
+                if(!string.IsNullOrEmpty(serviceType))
                 {
-                    return (T)JsonSerializer.Deserialize(ref elementStartPosition, targetType)!;
+                    if(TypeMap.TryGetValue(serviceType, out var targetType))
+                    {
+                        return (T)JsonSerializer.Deserialize(ref elementStartPosition, targetType)!;
+                    }
+
+                    return (T)JsonSerializer.Deserialize<Service>(ref elementStartPosition)!;
                 }
 
-                //TODO: Here put to AdditionalData is ther was not a type on a map? Do it via a default
-                //Func<T> or straight away?
+                throw new JsonException($"No handler for service \"{serviceType}\" found.");
             }
-
-            //TODO: Throw a more descriptive exception. Also check that getting here fails the tests!
-            throw new JsonException();
         }
 
 
