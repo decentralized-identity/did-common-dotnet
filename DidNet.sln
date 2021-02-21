@@ -7,15 +7,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8555C49F-B58
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{13B7D00C-B51E-459F-B593-940465240E33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DidNet.Common", "src\DidNet.Common\DidNet.Common.csproj", "{685C1C34-E637-449B-95EC-76F67AE656AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DidNet.Common", "src\DidNet.Common\DidNet.Common.csproj", "{685C1C34-E637-449B-95EC-76F67AE656AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DidNet.Common.Tests", "tests\DidNet.Common.Tests\DidNet.Common.Tests.csproj", "{D20C8F2C-E345-4392-840F-D0075980D0FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DidNet.Common.Tests", "tests\DidNet.Common.Tests\DidNet.Common.Tests.csproj", "{D20C8F2C-E345-4392-840F-D0075980D0FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DidNet.Crypto", "src\DidNet.Crypto\DidNet.Crypto.csproj", "{5DC74347-AC45-4B80-BA38-20C9C63D3D1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DidNet.Crypto", "src\DidNet.Crypto\DidNet.Crypto.csproj", "{5DC74347-AC45-4B80-BA38-20C9C63D3D1C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{316BECF3-251C-49B8-8FA9-67E9E54DF11E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DidNet.Crypto.BouncyCastle", "src\DidNet.Crypto.BouncyCastle\DidNet.Crypto.BouncyCastle.csproj", "{F87A9C20-3E8F-43C7-A72C-E8B732940A41}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DidNet.Json.Newtonsoft", "src\DidNet.Json.Newtonsoft\DidNet.Json.Newtonsoft.csproj", "{8E04B888-D289-4934-A173-D91260ED9AB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DidNet.Json.SystemText", "src\DidNet.Json.SystemText\DidNet.Json.SystemText.csproj", "{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +79,30 @@ Global
 		{F87A9C20-3E8F-43C7-A72C-E8B732940A41}.Release|x64.Build.0 = Release|Any CPU
 		{F87A9C20-3E8F-43C7-A72C-E8B732940A41}.Release|x86.ActiveCfg = Release|Any CPU
 		{F87A9C20-3E8F-43C7-A72C-E8B732940A41}.Release|x86.Build.0 = Release|Any CPU
+		{8E04B888-D289-4934-A173-D91260ED9AB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E04B888-D289-4934-A173-D91260ED9AB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E04B888-D289-4934-A173-D91260ED9AB2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8E04B888-D289-4934-A173-D91260ED9AB2}.Debug|x64.Build.0 = Debug|Any CPU
+		{8E04B888-D289-4934-A173-D91260ED9AB2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8E04B888-D289-4934-A173-D91260ED9AB2}.Debug|x86.Build.0 = Debug|Any CPU
+		{8E04B888-D289-4934-A173-D91260ED9AB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E04B888-D289-4934-A173-D91260ED9AB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E04B888-D289-4934-A173-D91260ED9AB2}.Release|x64.ActiveCfg = Release|Any CPU
+		{8E04B888-D289-4934-A173-D91260ED9AB2}.Release|x64.Build.0 = Release|Any CPU
+		{8E04B888-D289-4934-A173-D91260ED9AB2}.Release|x86.ActiveCfg = Release|Any CPU
+		{8E04B888-D289-4934-A173-D91260ED9AB2}.Release|x86.Build.0 = Release|Any CPU
+		{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906}.Debug|x64.Build.0 = Debug|Any CPU
+		{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906}.Debug|x86.Build.0 = Debug|Any CPU
+		{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906}.Release|x64.ActiveCfg = Release|Any CPU
+		{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906}.Release|x64.Build.0 = Release|Any CPU
+		{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906}.Release|x86.ActiveCfg = Release|Any CPU
+		{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,6 +112,8 @@ Global
 		{D20C8F2C-E345-4392-840F-D0075980D0FD} = {13B7D00C-B51E-459F-B593-940465240E33}
 		{5DC74347-AC45-4B80-BA38-20C9C63D3D1C} = {8555C49F-B58F-4770-8F6B-E7A6827E3274}
 		{F87A9C20-3E8F-43C7-A72C-E8B732940A41} = {8555C49F-B58F-4770-8F6B-E7A6827E3274}
+		{8E04B888-D289-4934-A173-D91260ED9AB2} = {8555C49F-B58F-4770-8F6B-E7A6827E3274}
+		{4DC46E1E-73D4-4A5F-B8FF-C2999DE8F906} = {8555C49F-B58F-4770-8F6B-E7A6827E3274}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CE7F7C54-6CA5-4DE1-8491-7ED58EBA1BE3}
