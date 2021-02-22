@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -38,13 +38,13 @@ namespace DidNet.Common
 
         public static string DID_URL = $"^did:{METHOD_NAME}:{METHOD_ID}{PARAMS}{PATH}{QUERY}{FRAGMENT}$";
 
-        private static Regex Regex = new Regex(DID_URL, RegexOptions.IgnoreCase);
+        private static Regex regex = new Regex(DID_URL, RegexOptions.IgnoreCase);
 
         public static DidUrl Parse(string didUrl)
         {
             if (string.IsNullOrWhiteSpace(didUrl))
                 throw new ArgumentException("Did url cannot be null or empty", nameof(didUrl));
-            var matches = Regex.Matches(didUrl);
+            var matches = regex.Matches(didUrl);
 
             if (matches.Count > 0)
             {

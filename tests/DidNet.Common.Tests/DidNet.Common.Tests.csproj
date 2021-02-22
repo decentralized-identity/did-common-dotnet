@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-
+    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DidNet.Common\DidNet.Common.csproj" />
+    <ProjectReference Include="..\..\src\DidNet.Json.SystemText\DidNet.Json.SystemText.csproj" />
   </ItemGroup>
 
 </Project>
