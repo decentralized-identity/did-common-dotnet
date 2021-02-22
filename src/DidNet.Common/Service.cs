@@ -9,6 +9,7 @@ namespace DidNet.Common
     /// https://www.w3.org/TR/did-core/#service-endpoints
     /// </summary>
     [DebuggerDisplay("Service(Id = {Id})")]
+    [DataContract]
     public class Service
     {
         [DataMember(Name ="id")]
@@ -18,8 +19,9 @@ namespace DidNet.Common
         public string? Type { get; set; }
 
         [DataMember(Name ="serviceEndpoint")]
-        public string? ServiceEndPoint { get; set; }
+        public string? ServiceEndpoint { get; set; }
 
+        [IgnoreDataMember]
         public IDictionary<string, object>? AdditionalData { get; set; }
     }
 }

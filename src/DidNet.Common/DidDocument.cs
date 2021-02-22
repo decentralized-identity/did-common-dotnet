@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,6 +12,7 @@ namespace DidNet.Common
     /// https://w3c.github.io/did-core/
     /// </summary>
     [DebuggerDisplay("DidDocument(Id = {Id})")]
+    [DataContract]
     public class DidDocument : IEquatable<DidDocument>
     {
         /// <summary>
