@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Text.Json;
+using DidNet.Common;
+using DidNet.Common.Tests;
+using DidNet.Common.Tests.DidJsonParsing.SystemText;
+using DidNet.Common.Verification;
 using DidNet.Json.SystemText;
 using DidNet.Json.SystemText.Converters;
 using Xunit;
@@ -131,33 +135,43 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
             var serviceTypeMap = new Dictionary<string, Type>(ServiceConverterFactory.DefaultTypeMap)
             {
                 { "OpenIdConnectVersion1.0Service", typeof(OpenIdConnectVersion1) },
-                { "CredentialRepositoryService", typeof(Service) },
-                { "XdiService", typeof(Service) },
-                { "AgentService", typeof(Service) },
-                { "IdentityHub", typeof(Service) },
-                { "MessagingService", typeof(Service) },
+                { "CredentialRepositoryService", typeof(IService) },
+                { "XdiService", typeof(IService) },
+                { "AgentService", typeof(IService) },
+                { "IdentityHub", typeof(IService) },
+                { "MessagingService", typeof(IService) },
                 { "SocialWebInboxService", typeof(SocialWebInboxService) },
                 { "VerifiableCredentialService", typeof(VerifiableCredentialService) },
-                { "DidAuthPushModeVersion1", typeof(Service) }
+                { "DidAuthPushModeVersion1", typeof(IService) }
             };
 
             var options = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
+
                 Converters =
                 {
                     new VerificationRelationshipConverterFactory(),
                     new VerificationMethodConverter(),
                     new ServiceConverterFactory(serviceTypeMap.ToImmutableDictionary()),
-                    new JsonLdContextConverter()
+                    new JsonLdContextConverter(),
+                    new TypeMappingConverter<IAuthenticationMethod, AuthenticationMethod>(),
+                    new TypeMappingConverter<IAssertionMethod, AssertionMethod>(),
+                    new TypeMappingConverter<IKeyAgreementMethod, KeyAgreementMethod>(),
+                    new TypeMappingConverter<ICapabilityDelegationMethod, CapabilityDelegationMethod>(),
+                    new TypeMappingConverter<ICapabilityInvocationMethod, CapabilityInvocationMethod>(),
+                    new TypeMappingConverter<IDidDocument, DidDocument>(),
+
                 },
                 PropertyNamingPolicy = new JsonCaseNamingPolicy()
             };
 
+
       
 
-            DidDocument? deseserializedDidDocument = JsonSerializer.Deserialize<DidDocument>(MultiServiceTestDocument, options);
+            IDidDocument? deseserializedDidDocument = JsonSerializer.Deserialize<IDidDocument>(MultiServiceTestDocument, options);
             string reserializedDidDocument = JsonSerializer.Serialize(deseserializedDidDocument, options);
+            IDidDocument? reredeseserializedDidDocument = JsonSerializer.Deserialize<IDidDocument>(reserializedDidDocument, options);
 
             //All the DID documents need to have an ID and a context. This one needs to have also a strongly type element.
             //The strongly typed services should be in document order (e.g. not in type map order).
@@ -197,17 +211,25 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
             var options = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
+
                 Converters =
                 {
                     new VerificationRelationshipConverterFactory(),
                     new VerificationMethodConverter(),
                     new ServiceConverterFactory(serviceTypeMap.ToImmutableDictionary()),
-                    new JsonLdContextConverter()
+                    new JsonLdContextConverter(),
+                    new TypeMappingConverter<IAuthenticationMethod, AuthenticationMethod>(),
+                    new TypeMappingConverter<IAssertionMethod, AssertionMethod>(),
+                    new TypeMappingConverter<IKeyAgreementMethod, KeyAgreementMethod>(),
+                    new TypeMappingConverter<ICapabilityDelegationMethod, CapabilityDelegationMethod>(),
+                    new TypeMappingConverter<ICapabilityInvocationMethod, CapabilityInvocationMethod>(),
+                    new TypeMappingConverter<IDidDocument, DidDocument>(),
+
                 },
                 PropertyNamingPolicy = new JsonCaseNamingPolicy()
             };
 
-            DidDocument? deseserializedDidDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
+            var deseserializedDidDocument = JsonSerializer.Deserialize<IDidDocument>(didDocumentFileContents, options);
             string reserializedDidDocument = JsonSerializer.Serialize(deseserializedDidDocument, options);
 
             //All the DID documents need to have an ID and a context. This one needs to have also a strongly type element.
@@ -246,7 +268,14 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
                     new VerificationRelationshipConverterFactory(),
                     new VerificationMethodConverter(),
                     new ServiceConverterFactory(serviceTypeMap.ToImmutableDictionary()),
-                    new JsonLdContextConverter()
+                    new JsonLdContextConverter(),
+                    new TypeMappingConverter<IAuthenticationMethod, AuthenticationMethod>(),
+                    new TypeMappingConverter<IAssertionMethod, AssertionMethod>(),
+                    new TypeMappingConverter<IKeyAgreementMethod, KeyAgreementMethod>(),
+                    new TypeMappingConverter<ICapabilityDelegationMethod, CapabilityDelegationMethod>(),
+                    new TypeMappingConverter<ICapabilityInvocationMethod, CapabilityInvocationMethod>(),
+                    new TypeMappingConverter<IDidDocument, DidDocument>(),
+
                 },
                 PropertyNamingPolicy = new JsonCaseNamingPolicy()
             };

@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
 namespace DidNet.Common.PublicKey
 {
-    [DebuggerDisplay("PublicKeyPem({Key})")]
-    public class PublicKeyPem : KeyFormat
+    [DebuggerDisplay("PublicKeyHex({Key})")]
+    public class PublicKeyHex : KeyFormat, IPublicKeyHex
     {
         public string Key { get; set; }
 
-        public PublicKeyPem(string key)
+        public PublicKeyHex(string key)
         {
             Key = key ?? throw new ArgumentException(nameof(key));
         }

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
 namespace DidNet.Common.Verification
 {
@@ -7,10 +7,10 @@ namespace DidNet.Common.Verification
     /// The reference Id field is string because it can be a fragment like "#key-1".
     /// </summary>
     [DebuggerDisplay("VerificationRelationship(Id = {Id}, IsEmbeddedVerification = {IsEmbeddedVerification})")]
-    public abstract class VerificationRelationship
+    public abstract class VerificationRelationship: IVerificationRelationship
     {
         public string? VerificationReferenceId { get; }
-        public VerificationMethod? EmbeddedVerification { get; }
+        public IVerificationMethod? EmbeddedVerification { get; }
 
         protected VerificationRelationship(string verificationReferenceId) => VerificationReferenceId = verificationReferenceId;
         protected VerificationRelationship(VerificationMethod embeddedVerification) => EmbeddedVerification = embeddedVerification;

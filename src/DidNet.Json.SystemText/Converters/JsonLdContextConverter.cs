@@ -15,9 +15,9 @@ namespace DidNet.Json.SystemText
     /// at https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-converters-how-to.
     /// https://w3c.github.io/did-imp-guide/
     /// </summary>
-    public class JsonLdContextConverter: JsonConverter<Context>
+    public class JsonLdContextConverter: JsonConverter<IContext>
     {
-        public override Context Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override IContext Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             //The DID JSON-LD context starts either with a single string, array of strings or is an object that can
             //contain whatever elements.
@@ -88,7 +88,7 @@ namespace DidNet.Json.SystemText
         }
 
 
-        public override void Write(Utf8JsonWriter writer, Context value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, IContext value, JsonSerializerOptions options)
         {
             if(value?.Contexes?.Count == 1)
             {

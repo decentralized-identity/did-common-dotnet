@@ -2,26 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace DidNet.Common
 {
+
     /// <summary>
     /// https://www.w3.org/TR/did-core/#service-endpoints
     /// </summary>
     [DebuggerDisplay("Service(Id = {Id})")]
     [DataContract]
-    public class Service
+    public class Service : IService
     {
-        [DataMember(Name ="id")]
+        [JsonPropertyName("id")]
         public Uri? Id { get; set; }
 
-        [DataMember(Name ="type")]
+        [JsonPropertyName("type")]
         public string? Type { get; set; }
 
-        [DataMember(Name ="serviceEndpoint")]
+        [JsonPropertyName("serviceEndpoint")]
         public string? ServiceEndpoint { get; set; }
 
-        [IgnoreDataMember]
+        [JsonExtensionData]
         public IDictionary<string, object>? AdditionalData { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using DidNet.Common.PublicKey;
 
@@ -8,7 +8,7 @@ namespace DidNet.Common.Verification
     /// https://w3c.github.io/did-core/#verification-methods
     /// </summary>
     [DebuggerDisplay("VerificationMethod(Id = {Id})")]
-    public class VerificationMethod
+    public class VerificationMethod: IVerificationMethod
     {
         //TODO: Could be FractionOrUri: Uri, or C# 10/F# discriminated union (like VerificationRelationship would be).
         [DataMember(Name ="id")]
@@ -20,7 +20,7 @@ namespace DidNet.Common.Verification
         [DataMember(Name ="controller")]
         public string? Controller { get; set; }
 
-        public KeyFormat? KeyFormat { get; set; }
+        public IKeyFormat? KeyFormat { get; set; }
     }
 }
 

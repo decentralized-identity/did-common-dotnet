@@ -1,8 +1,8 @@
-﻿namespace DidNet.Common.PublicKey
+namespace DidNet.Common.PublicKey
 {
     /// <summary>
     /// https://www.w3.org/TR/did-core/#key-types-and-formats
     /// </summary>
-    public abstract class KeyFormat { }
+    public abstract class KeyFormat : IKeyFormat { }
 }
 

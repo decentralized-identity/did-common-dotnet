@@ -84,7 +84,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
             var options = new JsonSerializerOptions();
             options.Converters.Add(new JsonLdContextConverter());
 
-            Context? context = JsonSerializer.Deserialize<Context>(OneUriContext, options);
+            var context = JsonSerializer.Deserialize<IContext>(OneUriContext, options);
             Assert.NotNull(context);
 
             var roundTrippedJson = JsonSerializer.Serialize(context, options);
@@ -103,7 +103,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
             var options = new JsonSerializerOptions();
             options.Converters.Add(new JsonLdContextConverter());
 
-            Context? context = JsonSerializer.Deserialize<Context>(CollectionUriContext, options);
+            var context = JsonSerializer.Deserialize<IContext>(CollectionUriContext, options);
             Assert.NotNull(context);
 
             var roundTrippedJson = JsonSerializer.Serialize(context, options);
@@ -122,7 +122,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
             var options = new JsonSerializerOptions();
             options.Converters.Add(new JsonLdContextConverter());
 
-            Context? context = JsonSerializer.Deserialize<Context>(ComplexContext1, options);
+            var context = JsonSerializer.Deserialize<IContext>(ComplexContext1, options);
             Assert.NotNull(context);
 
             var roundTrippedJson = JsonSerializer.Serialize(context, options);

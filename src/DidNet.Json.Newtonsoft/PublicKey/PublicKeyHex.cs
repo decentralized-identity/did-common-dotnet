@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
 namespace DidNet.Common.PublicKey
 {
     [DebuggerDisplay("PublicKeyHex({Key})")]
-    public class PublicKeyHex : KeyFormat
+    public class PublicKeyHex : KeyFormat, IPublicKeyHex
     {
         public string Key { get; set; }
 

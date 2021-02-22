@@ -1,24 +1,25 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace DidNet.Common.PublicKey
 {
     [DebuggerDisplay("PublicKeyJwk(Crv = {Crv}, Kid = {Kid}, Kty = {Kty}, X = {X}, Y = {Y})")]
-    public class PublicKeyJwk : KeyFormat
+    public class PublicKeyJwk : KeyFormat, IPublicKeyJwk
     {
-        [DataMember(Name ="crv")]
+        [JsonPropertyName("crv")]
         public string? Crv { get; set; }
 
-        [DataMember(Name ="kid")]
+        [JsonPropertyName("kid")]
         public string? Kid { get; set; }
 
-        [DataMember(Name ="kty")]
+        [JsonPropertyName("kty")]
         public string? Kty { get; set; }
 
-        [DataMember(Name ="x")]
+        [JsonPropertyName("x")]
         public string? X { get; set; }
 
-        [DataMember(Name ="y")]
+        [JsonPropertyName("y")]
         public string? Y { get; set; }
     }
 }

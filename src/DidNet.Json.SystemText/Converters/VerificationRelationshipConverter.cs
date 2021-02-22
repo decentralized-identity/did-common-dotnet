@@ -1,5 +1,6 @@
 using DidNet.Common.Verification;
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -9,8 +10,20 @@ namespace DidNet.Json.SystemText
     /// Converts a <see cref="VerificationRelationship"/> to or from JSON.
     /// </summary>
     /// <typeparam name="TVerificationRelationship">The type of <see cref="VerificationRelationship"/> to convert.</typeparam>
-    public class VerificationRelationshipConverter<TVerificationRelationship>: JsonConverter<TVerificationRelationship> where TVerificationRelationship : VerificationRelationship
+    public class VerificationRelationshipConverter<TVerificationRelationship>: JsonConverter<TVerificationRelationship> where TVerificationRelationship : IVerificationRelationship
     {
+
+        private Dictionary<Type, Type> implementationMapping = new Dictionary<Type, Type>();
+
+        public VerificationRelationshipConverter()
+        {
+            implementationMapping.Add(typeof(IAssertionMethod), typeof(AssertionMethod));
+            implementationMapping.Add(typeof(IAuthenticationMethod), typeof(AuthenticationMethod));
+            implementationMapping.Add(typeof(ICapabilityDelegationMethod), typeof(CapabilityDelegationMethod));
+            implementationMapping.Add(typeof(ICapabilityInvocationMethod), typeof(CapabilityInvocationMethod));
+            implementationMapping.Add(typeof(IKeyAgreementMethod), typeof(KeyAgreementMethod));
+        }
+
         /// <inheritdoc/>
         public override TVerificationRelationship Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -37,15 +50,18 @@ namespace DidNet.Json.SystemText
                 ThrowHelper.ThrowJsonException();
             }
 
-            return (TVerificationRelationship)Activator.CreateInstance(typeof(TVerificationRelationship), new object[] { constructorParameter! })!;
+            var implementation = implementationMapping[typeof(TVerificationRelationship)];
+           
+
+            return (TVerificationRelationship)Activator.CreateInstance(implementation, new object[] { constructorParameter! })!;
         }
 
 
         /// <inheritdoc/>
         public override void Write(Utf8JsonWriter writer, TVerificationRelationship value, JsonSerializerOptions options)
         {
-            var converter = GetKeyConverter<VerificationMethod>(options);
-            var verification = (VerificationRelationship)value;
+            var converter = GetKeyConverter<IVerificationMethod>(options);
+            var verification = (IVerificationRelationship)value;
 
             if(verification.IsEmbeddedVerification && verification.EmbeddedVerification != null)
             {
@@ -61,7 +77,7 @@ namespace DidNet.Json.SystemText
         }
 
 
-        private static JsonConverter<TVerificationMethod> GetKeyConverter<TVerificationMethod>(JsonSerializerOptions options) where TVerificationMethod : VerificationMethod
+        private static JsonConverter<TVerificationMethod> GetKeyConverter<TVerificationMethod>(JsonSerializerOptions options) where TVerificationMethod : IVerificationMethod
         {
             return (JsonConverter<TVerificationMethod>)options.GetConverter(typeof(TVerificationMethod));
         }

@@ -13,7 +13,7 @@ namespace DidNet.Json.SystemText
     /// <summary>
     /// Converts DID verifications methods to and from JSON.
     /// </summary>
-    public class VerificationMethodConverter: JsonConverter<VerificationMethod>
+    public class VerificationMethodConverter: JsonConverter<IVerificationMethod>
     {
         /// <summary>
         /// Default converters for the verification key types and formats.
@@ -22,19 +22,19 @@ namespace DidNet.Json.SystemText
         /// verification types and key formats see at
         /// https://w3c.github.io/did-core/#key-types-and-formats.
         /// </summary>
-        public static ImmutableDictionary<string, Func<string, JsonSerializerOptions, KeyFormat>> DefaultTypeMap =>
-            new Dictionary<string, Func<string, JsonSerializerOptions, KeyFormat>>(StringComparer.OrdinalIgnoreCase)
+        public static ImmutableDictionary<string, Func<string, JsonSerializerOptions, IKeyFormat>> DefaultTypeMap =>
+            new Dictionary<string, Func<string, JsonSerializerOptions, IKeyFormat>>(StringComparer.OrdinalIgnoreCase)
         {
-            { "publicKeyBase58", new Func<string, JsonSerializerOptions, PublicKeyBase58>((json, _) => new PublicKeyBase58(json)) },
-            { "publicKeyPem", new Func<string, JsonSerializerOptions, PublicKeyPem>((json, _) => new PublicKeyPem(json)) },
-            { "publicKeyHex", new Func<string, JsonSerializerOptions, PublicKeyHex>((json, _) => new PublicKeyHex(json)) },
-            { "publicKeyJwk", new Func<string, JsonSerializerOptions, PublicKeyJwk>((json, options) => JsonSerializer.Deserialize<PublicKeyJwk>(json, options)!) }
+            { "publicKeyBase58", new Func<string, JsonSerializerOptions, IPublicKeyBase58>((json, _) => new PublicKeyBase58(json)) },
+            { "publicKeyPem", new Func<string, JsonSerializerOptions, IPublicKeyPem>((json, _) => new PublicKeyPem(json)) },
+            { "publicKeyHex", new Func<string, JsonSerializerOptions, IPublicKeyHex>((json, _) => new PublicKeyHex(json)) },
+            { "publicKeyJwk", new Func<string, JsonSerializerOptions, IPublicKeyJwk>((json, options) => JsonSerializer.Deserialize<PublicKeyJwk>(json, options)!) }
         }.ToImmutableDictionary();
 
         /// <summary>
         /// Xyz.
         /// </summary>
-        private ImmutableDictionary<string, Func<string, JsonSerializerOptions, KeyFormat>> TypeMap { get; }
+        private ImmutableDictionary<string, Func<string, JsonSerializerOptions, IKeyFormat>> TypeMap { get; }
 
 
         /// <summary>
@@ -47,14 +47,14 @@ namespace DidNet.Json.SystemText
         /// A default constructor for <see cref="VerificationMethod"/> and sub-type conversions.
         /// </summary>
         /// <param name="typeMap">A runtime map of <see cref="Service"/> and sub-types.</param>
-        public VerificationMethodConverter(ImmutableDictionary<string, Func<string, JsonSerializerOptions, KeyFormat>> typeMap)
+        public VerificationMethodConverter(ImmutableDictionary<string, Func<string, JsonSerializerOptions, IKeyFormat>> typeMap)
         {
             TypeMap =  typeMap ?? throw new ArgumentNullException(nameof(typeMap));
         }
 
 
         /// <inheritdoc/>
-        public override VerificationMethod Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override IVerificationMethod Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if(reader.TokenType != JsonTokenType.StartObject)
             {
@@ -83,7 +83,7 @@ namespace DidNet.Json.SystemText
                 //N.B.! Or find a way to read the next property directly!
                 foreach(var serviceTypeDiscriminator in TypeMap.Keys)
                 {
-                    Func<string, JsonSerializerOptions, KeyFormat> keyFunc;
+                    Func<string, JsonSerializerOptions, IKeyFormat> keyFunc;
                     if(element.TryGetProperty(serviceTypeDiscriminator, out JsonElement serviceTypeElement)
                         && TypeMap.TryGetValue(serviceTypeDiscriminator, out keyFunc!))
                     {
@@ -98,7 +98,7 @@ namespace DidNet.Json.SystemText
 
 
         /// <inheritdoc/>
-        public override void Write(Utf8JsonWriter writer, VerificationMethod value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, IVerificationMethod value, JsonSerializerOptions options)
         {
             //TODO: Write use TypeMap as KeyFormat Converter so that these need not to be hardcoded like this.
             writer.WriteStartObject();
