@@ -322,7 +322,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
                 PropertyNamingPolicy = new JsonCaseNamingPolicy()
             };
 
-            DidDocument? deseserializedDidDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
+            var deseserializedDidDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
             string reserializedDidDocument = JsonSerializer.Serialize(deseserializedDidDocument, options);
 
             //All the DID documents need to have an ID and a context.
