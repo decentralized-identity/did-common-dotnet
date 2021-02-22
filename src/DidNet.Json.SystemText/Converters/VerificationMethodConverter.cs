@@ -106,17 +106,17 @@ namespace DidNet.Json.SystemText
             writer.WriteString("controller", value?.Controller);
             writer.WriteString("type", value?.Type);
 
-            if(value?.KeyFormat is PublicKeyHex hex)
+            if(value?.KeyFormat is IPublicKeyHex hex)
             {
                 writer.WriteString("publicKeyHex", hex?.Key);
             }
 
-            if(value?.KeyFormat is PublicKeyBase58 base58)
+            if(value?.KeyFormat is IPublicKeyBase58 base58)
             {
                 writer.WriteString("publicKeyBase58", base58?.Key);
             }
 
-            if(value?.KeyFormat is PublicKeyJwk jwk)
+            if(value?.KeyFormat is IPublicKeyJwk jwk)
             {
                 writer.WriteStartObject("publicKeyJwk");
                 writer.WriteString("crv", jwk.Crv);
@@ -135,7 +135,7 @@ namespace DidNet.Json.SystemText
                 writer.WriteEndObject();
             }
 
-            if(value?.KeyFormat is PublicKeyPem pem)
+            if(value?.KeyFormat is IPublicKeyPem pem)
             {
                 writer.WriteString("publicKeyPem", pem?.Key);
             }

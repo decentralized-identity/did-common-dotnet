@@ -42,7 +42,7 @@ namespace DidNet.Json.SystemText
             }
             else if(reader.TokenType == JsonTokenType.StartObject)
             {
-                constructorParameter = JsonSerializer.Deserialize<VerificationMethod>(ref reader, options);
+                constructorParameter = JsonSerializer.Deserialize<IVerificationMethod>(ref reader, options);
             }
             else
             {

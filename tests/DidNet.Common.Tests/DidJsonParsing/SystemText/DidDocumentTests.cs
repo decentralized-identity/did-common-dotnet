@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using DidNet.Common;
@@ -155,11 +156,6 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
                     new VerificationMethodConverter(),
                     new ServiceConverterFactory(serviceTypeMap.ToImmutableDictionary()),
                     new JsonLdContextConverter(),
-                    new TypeMappingConverter<IAuthenticationMethod, AuthenticationMethod>(),
-                    new TypeMappingConverter<IAssertionMethod, AssertionMethod>(),
-                    new TypeMappingConverter<IKeyAgreementMethod, KeyAgreementMethod>(),
-                    new TypeMappingConverter<ICapabilityDelegationMethod, CapabilityDelegationMethod>(),
-                    new TypeMappingConverter<ICapabilityInvocationMethod, CapabilityInvocationMethod>(),
                     new TypeMappingConverter<IDidDocument, DidDocument>(),
 
                 },
@@ -218,11 +214,6 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
                     new VerificationMethodConverter(),
                     new ServiceConverterFactory(serviceTypeMap.ToImmutableDictionary()),
                     new JsonLdContextConverter(),
-                    new TypeMappingConverter<IAuthenticationMethod, AuthenticationMethod>(),
-                    new TypeMappingConverter<IAssertionMethod, AssertionMethod>(),
-                    new TypeMappingConverter<IKeyAgreementMethod, KeyAgreementMethod>(),
-                    new TypeMappingConverter<ICapabilityDelegationMethod, CapabilityDelegationMethod>(),
-                    new TypeMappingConverter<ICapabilityInvocationMethod, CapabilityInvocationMethod>(),
                     new TypeMappingConverter<IDidDocument, DidDocument>(),
 
                 },
@@ -269,11 +260,6 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
                     new VerificationMethodConverter(),
                     new ServiceConverterFactory(serviceTypeMap.ToImmutableDictionary()),
                     new JsonLdContextConverter(),
-                    new TypeMappingConverter<IAuthenticationMethod, AuthenticationMethod>(),
-                    new TypeMappingConverter<IAssertionMethod, AssertionMethod>(),
-                    new TypeMappingConverter<IKeyAgreementMethod, KeyAgreementMethod>(),
-                    new TypeMappingConverter<ICapabilityDelegationMethod, CapabilityDelegationMethod>(),
-                    new TypeMappingConverter<ICapabilityInvocationMethod, CapabilityInvocationMethod>(),
                     new TypeMappingConverter<IDidDocument, DidDocument>(),
 
                 },
@@ -324,6 +310,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
 
             var deseserializedDidDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
             string reserializedDidDocument = JsonSerializer.Serialize(deseserializedDidDocument, options);
+            Debug.WriteLine(reserializedDidDocument);
 
             //All the DID documents need to have an ID and a context.
             Assert.NotNull(deseserializedDidDocument?.Id);
