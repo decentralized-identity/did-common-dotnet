@@ -11,7 +11,6 @@ namespace DidNet.Common
     /// https://www.w3.org/TR/did-core/#service-endpoints
     /// </summary>
     [DebuggerDisplay("Service(Id = {Id})")]
-    [DataContract]
     public class Service : IService
     {
         [JsonPropertyName("id")]

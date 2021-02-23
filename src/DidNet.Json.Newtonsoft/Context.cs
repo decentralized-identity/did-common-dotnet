@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using DidNet.Common;
 using Newtonsoft.Json;
 
-namespace DidNet.Common
+namespace DidNet.Json.Newtonsoft
 {
 
     /// <summary>

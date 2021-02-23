@@ -1,8 +1,9 @@
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using DidNet.Common.PublicKey;
+using DidNet.Common.Verification;
 
-namespace DidNet.Common.Verification
+namespace DidNet.Json.Newtonsoft.Verification
 {
     /// <summary>
     /// https://w3c.github.io/did-core/#verification-methods

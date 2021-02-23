@@ -3,24 +3,24 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
+using DidNet.Common;
 using DidNet.Common.Verification;
 using Newtonsoft.Json;
 
-namespace DidNet.Common
+namespace DidNet.Json.Newtonsoft
 {
     /// <summary>
     /// https://w3c.github.io/did-core/
     /// </summary>
     [DebuggerDisplay("DidDocument(Id = {Id})")]
     [DataContract]
-    public class DidDocument : IEquatable<DidDocument>
+    public class DidDocument //: IEquatable<DidDocument>
     {
         /// <summary>
         /// https://w3c.github.io/did-core/#did-subject
         /// </summary>
-        [DataMember(Name ="@context")]
-        public IContext? Context { get; set; }
+        //[DataMember(Name ="@context")]
+        //public IContext? Context { get; set; }
 
         //TODO: Add alsoKnownAs attribute. How is it modelled in the document? Continue the one GH thread.
 
@@ -35,6 +35,7 @@ namespace DidNet.Common
         /// https://w3c.github.io/did-core/#control
         /// </summary>
         [DataMember(Name ="controller")]
+        
         public string[]? Controller { get; set; }
 
         /// <summary>
@@ -97,96 +98,96 @@ namespace DidNet.Common
 
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
+        //public override bool Equals(object? obj)
+        //{
+        //    if (obj is null)
+        //    {
+        //        return false;
+        //    }
 
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
+        //    if (ReferenceEquals(this, obj))
+        //    {
+        //        return true;
+        //    }
 
-            if (GetType() != obj.GetType())
-            {
-                return false;
-            }
+        //    if (GetType() != obj.GetType())
+        //    {
+        //        return false;
+        //    }
 
-            return Equals((DidDocument)obj);
-        }
-
-
-        /// <inheritdoc/>
-        public bool Equals(DidDocument? other)
-        {
-            if (other == null)
-            {
-                return false;
-            }
-
-            return Context == other.Context
-                && Id == other?.Id
-                && (Controller?.SequenceEqual(other!.Controller!)).GetValueOrDefault()
-                && (VerificationMethod?.SequenceEqual(other!.VerificationMethod!)).GetValueOrDefault()
-                && (Authentication?.SequenceEqual(other!.Authentication!)).GetValueOrDefault()
-                && (AssertionMethod?.SequenceEqual(other!.AssertionMethod!)).GetValueOrDefault()
-                && (KeyAgreement?.SequenceEqual(other!.KeyAgreement!)).GetValueOrDefault()
-                && (CapabilityDelegation?.SequenceEqual(other!.CapabilityDelegation!)).GetValueOrDefault()
-                && (Service?.SequenceEqual(other!.Service!)).GetValueOrDefault();
-        }
+        //    return Equals((DidDocument)obj);
+        //}
 
 
-        /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            var hash = new HashCode();
-            hash.Add(Context);
-            hash.Add(Id);
+        ///// <inheritdoc/>
+        //public bool Equals(DidDocument? other)
+        //{
+        //    if (other == null)
+        //    {
+        //        return false;
+        //    }
 
-            for (int i = 0; i < Controller?.Length; ++i)
-            {
-                hash.Add(Controller[i]);
-            }
+        //    //return Context == other.Context
+        //    //    && Id == other?.Id
+        //    //    && (Controller?.SequenceEqual(other!.Controller!)).GetValueOrDefault()
+        //    //    && (VerificationMethod?.SequenceEqual(other!.VerificationMethod!)).GetValueOrDefault()
+        //    //    && (Authentication?.SequenceEqual(other!.Authentication!)).GetValueOrDefault()
+        //    //    && (AssertionMethod?.SequenceEqual(other!.AssertionMethod!)).GetValueOrDefault()
+        //    //    && (KeyAgreement?.SequenceEqual(other!.KeyAgreement!)).GetValueOrDefault()
+        //    //    && (CapabilityDelegation?.SequenceEqual(other!.CapabilityDelegation!)).GetValueOrDefault()
+        //    //    && (Service?.SequenceEqual(other!.Service!)).GetValueOrDefault();
+        //}
 
-            for (int i = 0; i < VerificationMethod?.Length; ++i)
-            {
-                hash.Add(VerificationMethod[i]);
-            }
 
-            for (int i = 0; i < Authentication?.Length; ++i)
-            {
-                hash.Add(Authentication[i]);
-            }
+        ///// <inheritdoc/>
+        //public override int GetHashCode()
+        //{
+        //    var hash = new HashCode();
+        //    hash.Add(Context);
+        //    hash.Add(Id);
 
-            for (int i = 0; i < AssertionMethod?.Length; ++i)
-            {
-                hash.Add(AssertionMethod[i]);
-            }
+        //    for (int i = 0; i < Controller?.Length; ++i)
+        //    {
+        //        hash.Add(Controller[i]);
+        //    }
 
-            for (int i = 0; i < KeyAgreement?.Length; ++i)
-            {
-                hash.Add(KeyAgreement[i]);
-            }
+        //    for (int i = 0; i < VerificationMethod?.Length; ++i)
+        //    {
+        //        hash.Add(VerificationMethod[i]);
+        //    }
 
-            for (int i = 0; i < KeyAgreement?.Length; ++i)
-            {
-                hash.Add(KeyAgreement[i]);
-            }
+        //    for (int i = 0; i < Authentication?.Length; ++i)
+        //    {
+        //        hash.Add(Authentication[i]);
+        //    }
 
-            for (int i = 0; i < CapabilityDelegation?.Length; ++i)
-            {
-                hash.Add(CapabilityDelegation[i]);
-            }
+        //    for (int i = 0; i < AssertionMethod?.Length; ++i)
+        //    {
+        //        hash.Add(AssertionMethod[i]);
+        //    }
 
-            for (int i = 0; i < Service?.Length; ++i)
-            {
-                hash.Add(Service[i]);
-            }
+        //    for (int i = 0; i < KeyAgreement?.Length; ++i)
+        //    {
+        //        hash.Add(KeyAgreement[i]);
+        //    }
 
-            return hash.ToHashCode();
-        }
+        //    for (int i = 0; i < KeyAgreement?.Length; ++i)
+        //    {
+        //        hash.Add(KeyAgreement[i]);
+        //    }
+
+        //    for (int i = 0; i < CapabilityDelegation?.Length; ++i)
+        //    {
+        //        hash.Add(CapabilityDelegation[i]);
+        //    }
+
+        //    for (int i = 0; i < Service?.Length; ++i)
+        //    {
+        //        hash.Add(Service[i]);
+        //    }
+
+        //    return hash.ToHashCode();
+        //}
     }
 }
 

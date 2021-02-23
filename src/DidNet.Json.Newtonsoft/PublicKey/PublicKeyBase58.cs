@@ -1,7 +1,8 @@
 using System;
 using System.Diagnostics;
+using DidNet.Common.PublicKey;
 
-namespace DidNet.Common.PublicKey
+namespace DidNet.Json.Newtonsoft.PublicKey
 {
     [DebuggerDisplay("PublicKeyBase58({Key})")]
     public class PublicKeyBase58 : KeyFormat, IPublicKeyBase58

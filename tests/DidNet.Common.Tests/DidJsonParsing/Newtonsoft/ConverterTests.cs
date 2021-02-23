@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Xunit;
-using JsonSerializer = System.Text.Json.JsonSerializer;
+using Xunit.Abstractions;
 
 namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
 {
@@ -75,24 +75,22 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
 
 
 
-        //[Fact]
+        [Fact]
         public void RoundtripServiceTest1()
         {
-
-            Service? service = JsonConvert.DeserializeObject<Service>(TestService1);
+            var service = JsonConvert.DeserializeObject<DidNet.Json.Newtonsoft.Service>(TestService1);
             Assert.NotNull(service);
 
             var roundTrippedJson = JsonConvert.SerializeObject(service);
             Assert.NotNull(roundTrippedJson);
-
 
             Assert.True(JToken.DeepEquals(JToken.Parse(TestService1), JToken.Parse(roundTrippedJson)));
         }
 
         
 
-       // [Fact]
-        public void RoundtripOneUriContext()
+       [Fact]
+       public void RoundtripOneUriContext()
         {
             Context? context = JsonConvert.DeserializeObject<Context>(OneUriContext);
             Assert.NotNull(context);
@@ -104,7 +102,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
         }
 
 
-        //[Fact]
+        [Fact]
         public void RoundtripCollectionUriContext()
         {
             Context? context = JsonConvert.DeserializeObject<Context>(CollectionUriContext);
@@ -117,7 +115,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
         }
 
 
-        //[Fact]
+        [Fact]
         public void RountripComplexContext()
         {
             var properties = typeof(Context).GetProperties();

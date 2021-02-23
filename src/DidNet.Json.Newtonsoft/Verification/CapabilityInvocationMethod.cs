@@ -1,6 +1,7 @@
 using System.Diagnostics;
+using DidNet.Common.Verification;
 
-namespace DidNet.Common.Verification
+namespace DidNet.Json.Newtonsoft.Verification
 {
     /// <summary>
     /// https://w3c.github.io/did-core/#verification-methods
