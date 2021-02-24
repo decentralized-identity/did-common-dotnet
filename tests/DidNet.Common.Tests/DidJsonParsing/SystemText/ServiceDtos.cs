@@ -28,7 +28,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
         [DataMember(Name = "description")]
         public string? Description { get; set; }
 
-        [DataMember(Name = "spamCost")]
+        [DataMember(Name="spamCost")]
         public SpamCost? SpamCost { get; set; }
     }
 

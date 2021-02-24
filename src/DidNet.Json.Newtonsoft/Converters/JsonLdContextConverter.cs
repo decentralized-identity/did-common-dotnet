@@ -1,148 +1,82 @@
-using DidNet.Common;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using DidNet.Common;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-namespace DidNet.Json.SystemText
+namespace DidNet.Json.Newtonsoft.Converters
 {
-    ///// <summary>
-    ///// Converts <see cref="Context" to and from JSON.
-    ///// Based on DictionaryTKeyEnumTValueConverter
-    ///// at https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-converters-how-to.
-    ///// https://w3c.github.io/did-imp-guide/
-    ///// </summary>
-    //public class JsonLdContextConverter: JsonConverter<IContext>
-    //{
-    //    public override IContext Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    //    {
-    //        //The DID JSON-LD context starts either with a single string, array of strings or is an object that can
-    //        //contain whatever elements.
-    //        var context = new Context { Contexes = new Collection<string>(), AdditionalData = new Dictionary<string, object>() };
-    //        var tokenType = reader.TokenType;
-    //        if(reader.TokenType == JsonTokenType.PropertyName)
-    //        {
-    //            var propertyName = reader.GetString();
-    //            if(propertyName == "@context")
-    //            {
-    //                _ = reader.Read();
-    //            }
-    //        }
+    /// <summary>
+    /// Converts <see cref="Context" to and from JSON.
+    /// https://w3c.github.io/did-imp-guide/
+    /// </summary>
+    #pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).ullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+    public class JsonLdContextConverter<TContext> : JsonConverter<IContext> where TContext: class, IContext, new()
+    {
+        public override void WriteJson(JsonWriter writer, IContext value, JsonSerializer serializer)
+        {
+            if (value?.Contexes?.Count == 1)
+            {
+                writer.WriteValue(value.Contexes.ElementAt(0));
+            }
+            else if (value?.Contexes?.Count > 1)
+            {
+                writer.WriteStartArray();
+                for (var i = 0; i < value?.Contexes.Count; ++i)
+                {
+                    writer.WriteValue(value.Contexes.ElementAt(i));
+                }
 
-    //        if(tokenType == JsonTokenType.String)
-    //        {
-    //            var ctx = reader.GetString();
-    //            if(ctx != null)
-    //            {
-    //                context.Contexes.Add(ctx);
-    //            }
+                writer.WriteEndArray();
+            }
 
-    //            return context;
-    //        }
+            if (value?.AdditionalData?.Count > 0)
+            {
+                serializer.Serialize(writer, value.AdditionalData);
+            }
+        }
 
-    //        if(tokenType == JsonTokenType.StartArray)
-    //        {
-    //            var strList = JsonSerializer.Deserialize<string[]>(ref reader);
-    //            if(strList != null)
-    //            {
-    //                for(int i = 0; i < strList.Length; i++)
-    //                {
-    //                    string s = strList[i];
-    //                    context.Contexes.Add(s);
-    //                }
-    //            }
+        public override IContext ReadJson(JsonReader reader, Type objectType, IContext existingValue,
+            bool hasExistingValue,
+            JsonSerializer serializer)
+        {
+            var context = new TContext();
+         
+            if (reader.TokenType == JsonToken.String)
+            {
+                context.Contexes = new List<string>();
+                var singleContext = serializer.Deserialize<string>(reader);
+                //Should check and validate the context name to be "https://www.w3.org/ns/did/v1"
+                if (singleContext != null)
+                {
+                    context.Contexes.Add(singleContext);
+                }
 
-    //            return context;
-    //        }
+                return context;
+            }
 
-    //        while(reader.Read())
-    //        {
-    //            if(reader.TokenType == JsonTokenType.EndObject)
-    //            {
-    //                return context;
-    //            }
+            if (reader.TokenType == JsonToken.StartArray)
+            {
+                var multipleContexts = serializer.Deserialize<string[]>(reader);
+                //Should check and validate the context name to be "https://www.w3.org/ns/did/v1"
+                if (multipleContexts != null)
+                {
+                    context.Contexes = new List<string>(multipleContexts);
+                }
 
-    //            if(reader.TokenType != JsonTokenType.PropertyName)
-    //            {
-    //                throw new JsonException("JsonTokenType was not PropertyName");
-    //            }
+                return context;
+            }
 
-    //            var propertyName = reader.GetString();
-    //            if(string.IsNullOrWhiteSpace(propertyName))
-    //            {
-    //                throw new JsonException("Failed to get property name");
-    //            }
+            if (reader.TokenType == JsonToken.StartObject)
+            {
+                //Should check and validate the first context name to be "https://www.w3.org/ns/did/v1"
+                var jObject = JObject.Load(reader);
+                var allData = jObject.ToObject<IDictionary<string, object>>();
+                context.AdditionalData = allData;
+            }
+            return context;
 
-    //            _ = reader.Read();
-    //            object? val = ExtractValue(ref reader, propertyName, options);
-    //            if(val != null)
-    //            {
-    //                context.AdditionalData.Add(propertyName, val);
-    //            }
-    //        }
-
-    //        return context;
-    //    }
-
-
-    //    public override void Write(Utf8JsonWriter writer, IContext value, JsonSerializerOptions options)
-    //    {
-    //        if(value?.Contexes?.Count == 1)
-    //        {
-    //            writer.WriteStringValue(value.Contexes.ElementAt(0));
-    //        }
-    //        else if(value?.Contexes?.Count > 1)
-    //        {
-    //            writer.WriteStartArray();
-    //            for(int i = 0; i < value?.Contexes.Count; ++i)
-    //            {
-    //                writer.WriteStringValue(value.Contexes.ElementAt(i));
-    //            }
-
-    //            writer.WriteEndArray();
-    //        }
-
-    //        if(value?.AdditionalData?.Count > 0)
-    //        {
-    //            JsonSerializer.Serialize(writer, value.AdditionalData);
-    //        }
-    //    }
-
-
-    //    [return: MaybeNull]
-    //    private static object? ExtractValue(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options)
-    //    {
-    //        //https://github.com/dotnet/corefx/blob/master/src/System.Text.Json/src/System/Text/Json/Serialization/Converters/JsonValueConverterKeyValuePair.cs
-    //        switch(reader.TokenType)
-    //        {
-    //            case JsonTokenType.String:
-    //                if(reader.TryGetDateTime(out var date))
-    //                {
-    //                    return date;
-    //                }
-    //                return reader.GetString();
-    //            case JsonTokenType.False:
-    //                return false;
-    //            case JsonTokenType.True:
-    //                return true;
-    //            case JsonTokenType.Null:
-    //                return null;
-    //            case JsonTokenType.Number:
-    //                if(reader.TryGetInt64(out var result))
-    //                {
-    //                    return result;
-    //                }
-    //                return reader.GetDecimal();
-    //            case JsonTokenType.StartObject:
-    //                return JsonSerializer.Deserialize(ref reader, typeof(object));
-
-    //            case JsonTokenType.StartArray:
-    //                return JsonSerializer.Deserialize(ref reader, typeof(object[]));
-    //            default:
-    //                throw new JsonException($"'{reader.TokenType}' is not supported");
-    //        }
-    //    }
-    //}
+        }
+    }
 }

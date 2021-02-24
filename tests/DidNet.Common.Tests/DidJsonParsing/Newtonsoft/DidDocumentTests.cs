@@ -160,7 +160,8 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                     new VerificationRelationshipConverter<ICapabilityInvocationMethod>(),
                     new VerificationRelationshipConverter<IKeyAgreementMethod>(),
                     new VerificationMethodConverter(),
-                    new ServiceConverter(serviceTypeMap.ToImmutableDictionary())
+                    new ServiceConverter(serviceTypeMap.ToImmutableDictionary()),
+                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
                 }
             };
 
@@ -215,7 +216,8 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                     new VerificationRelationshipConverter<ICapabilityInvocationMethod>(),
                     new VerificationRelationshipConverter<IKeyAgreementMethod>(),
                     new VerificationMethodConverter(),
-                    new ServiceConverter(serviceTypeMap.ToImmutableDictionary())
+                    new ServiceConverter(serviceTypeMap.ToImmutableDictionary()),
+                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
                 }
             };
 
@@ -262,7 +264,8 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                     new VerificationRelationshipConverter<ICapabilityInvocationMethod>(),
                     new VerificationRelationshipConverter<IKeyAgreementMethod>(),
                     new VerificationMethodConverter(),
-                    new ServiceConverter(serviceTypeMap.ToImmutableDictionary())
+                    new ServiceConverter(serviceTypeMap.ToImmutableDictionary()),
+                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
                 }
             };
 
@@ -305,7 +308,8 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                     new VerificationRelationshipConverter<ICapabilityInvocationMethod>(),
                     new VerificationRelationshipConverter<IKeyAgreementMethod>(),
                     new VerificationMethodConverter(),
-                    new ServiceConverter()
+                    new ServiceConverter(),
+                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
                 }
             };
 
@@ -339,7 +343,8 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                     new VerificationRelationshipConverter<ICapabilityInvocationMethod>(),
                     new VerificationRelationshipConverter<IKeyAgreementMethod>(),
                     new VerificationMethodConverter(),
-                    new ServiceConverter()
+                    new ServiceConverter(),
+                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
                 }
             };
 

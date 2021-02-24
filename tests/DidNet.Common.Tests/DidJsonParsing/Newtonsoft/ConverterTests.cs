@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text.Json;
 using DidNet.Common.Tests.DidJsonParsing.SystemText;
+using DidNet.Json.Newtonsoft.Converters;
 using DidNet.Json.SystemText;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -41,7 +42,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
         /// <summary>
         /// A sample complex @context copied from https://json-ld.org/playground/ JSON-LD 1.1 compacted Place sample.
         /// </summary>
-        private string ComplexContext1 => @"{ ""@context"": {
+        private string ComplexContext => @"{ ""@context"": {
             ""name"": ""http://schema.org/name"",
             ""description"": ""http://schema.org/description"",
             ""image"": {
@@ -69,10 +70,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
             }";
 
 
-        private string ComplexContext => @"{ ""@context"": [""https://w3id.org/future-method/v1"", ""https://w3id.org/veres-one/v1""] ,
-            ""geo"": ""http://schema.org/geo"",
-            }";
-
+   
 
 
         [Fact]
@@ -92,7 +90,17 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
        [Fact]
        public void RoundtripOneUriContext()
         {
-            Context? context = JsonConvert.DeserializeObject<Context>(OneUriContext);
+            var settings = new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore,
+                Converters = new JsonConverter[]
+                {
+                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
+                }
+            };
+
+            var context = JsonConvert.DeserializeObject<IContext>(OneUriContext, settings);
             Assert.NotNull(context);
 
             var roundTrippedJson = JsonConvert.SerializeObject(context);
@@ -105,10 +113,20 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
         [Fact]
         public void RoundtripCollectionUriContext()
         {
-            Context? context = JsonConvert.DeserializeObject<Context>(CollectionUriContext);
+            var settings = new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore,
+                Converters = new JsonConverter[]
+                {
+                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
+                }
+            };
+
+            var context = JsonConvert.DeserializeObject<IContext>(CollectionUriContext, settings);
             Assert.NotNull(context);
 
-            var roundTrippedJson = JsonConvert.SerializeObject(context);
+            var roundTrippedJson = JsonConvert.SerializeObject(context, settings);
             Assert.NotNull(roundTrippedJson);
 
             Assert.True(JToken.DeepEquals(JToken.Parse(CollectionUriContext), JToken.Parse(roundTrippedJson)));
@@ -118,14 +136,23 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
         [Fact]
         public void RountripComplexContext()
         {
-            var properties = typeof(Context).GetProperties();
-            Context? context = JsonConvert.DeserializeObject<Context>(ComplexContext);
+            var settings = new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore,
+                Converters = new JsonConverter[]
+                {
+                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
+                }
+            };
+
+            var context = JsonConvert.DeserializeObject<IContext>(ComplexContext, settings);
             Assert.NotNull(context);
 
-            var roundTrippedJson = JsonConvert.SerializeObject(context);
+            var roundTrippedJson = JsonConvert.SerializeObject(context, settings);
             Assert.NotNull(roundTrippedJson);
 
-            Assert.True(JToken.DeepEquals(JToken.Parse(ComplexContext1), JToken.Parse(roundTrippedJson)));
+            Assert.True(JToken.DeepEquals(JToken.Parse(ComplexContext), JToken.Parse(roundTrippedJson)));
         }
     }
 }

@@ -19,8 +19,8 @@ namespace DidNet.Json.Newtonsoft
         /// <summary>
         /// https://w3c.github.io/did-core/#did-subject
         /// </summary>
-        //[DataMember(Name ="@context")]
-        //public IContext? Context { get; set; }
+        [DataMember(Name ="@context")]
+        public IContext? Context { get; set; }
 
         //TODO: Add alsoKnownAs attribute. How is it modelled in the document? Continue the one GH thread.
 
