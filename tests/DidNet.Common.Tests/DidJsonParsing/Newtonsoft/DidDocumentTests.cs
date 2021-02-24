@@ -6,6 +6,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using DidNet.Common.Tests.DidJsonParsing.SystemText;
 using DidNet.Common.Verification;
+using DidNet.Json.Newtonsoft;
 using DidNet.Json.Newtonsoft.Converters;
 using DidNet.Json.Newtonsoft.ModelExt;
 using Newtonsoft.Json;
@@ -135,36 +136,19 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
         [Fact]
         public void FullDidDocumentTest()
         {
-            var serviceTypeMap = new Dictionary<string, Type>(ServiceConverter.DefaultTypeMap)
-            {
-                { "OpenIdConnectVersion1.0Service", typeof(OpenIdConnectVersion1) },
-                { "CredentialRepositoryService", typeof(ServiceExt) },
-                { "XdiService", typeof(ServiceExt) },
-                { "AgentService", typeof(ServiceExt) },
-                { "IdentityHub", typeof(ServiceExt) },
-                { "MessagingService", typeof(ServiceExt) },
-                { "SocialWebInboxService", typeof(SocialWebInboxService) },
-                { "VerifiableCredentialService", typeof(VerifiableCredentialService) },
-                { "DidAuthPushModeVersion1", typeof(ServiceExt) }
-            };
+            var didSettings = new DidJsonSerializerSettings();
+            didSettings.ServiceConverter
+                .AddOrUpdateMapping<OpenIdConnectVersion1>("OpenIdConnectVersion1.0Service")
+                .AddOrUpdateMapping<SocialWebInboxService>("SocialWebInboxService")
+                .AddOrUpdateMapping<VerifiableCredentialService>("VerifiableCredentialService")
+                .AddOrUpdateMapping<ServiceExt>("CredentialRepositoryService")
+                .AddOrUpdateMapping<ServiceExt>("XdiService")
+                .AddOrUpdateMapping<ServiceExt>("AgentService")
+                .AddOrUpdateMapping<ServiceExt>("IdentityHub")
+                .AddOrUpdateMapping<ServiceExt>("MessagingService")
+                .AddOrUpdateMapping<ServiceExt>("DidAuthPushModeVersion1");
 
-
-            var settings = new JsonSerializerSettings()
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                Converters = new JsonConverter[]
-                {
-                    new VerificationRelationshipConverter<IAssertionMethod>(),
-                    new VerificationRelationshipConverter<IAuthenticationMethod>(),
-                    new VerificationRelationshipConverter<ICapabilityDelegationMethod>(),
-                    new VerificationRelationshipConverter<ICapabilityInvocationMethod>(),
-                    new VerificationRelationshipConverter<IKeyAgreementMethod>(),
-                    new VerificationMethodConverter(),
-                    new ServiceConverter(serviceTypeMap.ToImmutableDictionary()),
-                    new JsonLdContextConverter<Context>()
-                }
-            };
+            var settings = didSettings.GetJsonSerializerSettings();
 
             var deseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(MultiServiceTestDocument, settings);
 
@@ -200,27 +184,11 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
         {
             TestInfrastructureConstants.ThrowIfPreconditionFails(didDocumentFilename, didDocumentFileContents);
 
-            var serviceTypeMap = new Dictionary<string, Type>(ServiceConverter.DefaultTypeMap)
-            {
-                { "VerifiableCredentialService", typeof(VerifiableCredentialService) }
-            };
+            var didSettings = new DidJsonSerializerSettings();
+            didSettings.ServiceConverter.AddOrUpdateMapping<VerifiableCredentialService>("VerifiableCredentialService");
 
-            var settings = new JsonSerializerSettings()
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                Converters = new JsonConverter[]
-                {
-                    new VerificationRelationshipConverter<IAssertionMethod>(),
-                    new VerificationRelationshipConverter<IAuthenticationMethod>(),
-                    new VerificationRelationshipConverter<ICapabilityDelegationMethod>(),
-                    new VerificationRelationshipConverter<ICapabilityInvocationMethod>(),
-                    new VerificationRelationshipConverter<IKeyAgreementMethod>(),
-                    new VerificationMethodConverter(),
-                    new ServiceConverter(serviceTypeMap.ToImmutableDictionary()),
-                    new JsonLdContextConverter<Context>()
-                }
-            };
+            var settings = didSettings.GetJsonSerializerSettings();
+          
 
             var deseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(didDocumentFileContents, settings);
 
@@ -252,23 +220,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
         {
             TestInfrastructureConstants.ThrowIfPreconditionFails(didDocumentFilename, didDocumentFileContents);
 
-            var serviceTypeMap = new Dictionary<string, Type>(ServiceConverter.DefaultTypeMap);
-            var settings = new JsonSerializerSettings()
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                Converters = new JsonConverter[]
-                {
-                    new VerificationRelationshipConverter<IAssertionMethod>(),
-                    new VerificationRelationshipConverter<IAuthenticationMethod>(),
-                    new VerificationRelationshipConverter<ICapabilityDelegationMethod>(),
-                    new VerificationRelationshipConverter<ICapabilityInvocationMethod>(),
-                    new VerificationRelationshipConverter<IKeyAgreementMethod>(),
-                    new VerificationMethodConverter(),
-                    new ServiceConverter(serviceTypeMap.ToImmutableDictionary()),
-                    new JsonLdContextConverter<Context>()
-                }
-            };
+            var settings = new DidJsonSerializerSettings().GetJsonSerializerSettings();
 
             var deseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(didDocumentFileContents, settings);
 
@@ -297,22 +249,8 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
         {
             TestInfrastructureConstants.ThrowIfPreconditionFails(didDocumentFilename, didDocumentFileContents);
 
-            var settings = new JsonSerializerSettings()
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                Converters = new JsonConverter[]
-                {
-                    new VerificationRelationshipConverter<IAssertionMethod>(),
-                    new VerificationRelationshipConverter<IAuthenticationMethod>(),
-                    new VerificationRelationshipConverter<ICapabilityDelegationMethod>(),
-                    new VerificationRelationshipConverter<ICapabilityInvocationMethod>(),
-                    new VerificationRelationshipConverter<IKeyAgreementMethod>(),
-                    new VerificationMethodConverter(),
-                    new ServiceConverter(),
-                    new JsonLdContextConverter<Context>()
-                }
-            };
+            var settings = new DidJsonSerializerSettings().GetJsonSerializerSettings();
+
 
             var deseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(didDocumentFileContents, settings);
             string reserializedDidDocument = JsonConvert.SerializeObject(deseserializedDidDocument, settings);
@@ -332,22 +270,8 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
         {
             TestInfrastructureConstants.ThrowIfPreconditionFails(didDocumentFilename, didDocumentFileContents);
 
-            var settings = new JsonSerializerSettings()
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                Converters = new JsonConverter[]
-                {
-                    new VerificationRelationshipConverter<IAssertionMethod>(),
-                    new VerificationRelationshipConverter<IAuthenticationMethod>(),
-                    new VerificationRelationshipConverter<ICapabilityDelegationMethod>(),
-                    new VerificationRelationshipConverter<ICapabilityInvocationMethod>(),
-                    new VerificationRelationshipConverter<IKeyAgreementMethod>(),
-                    new VerificationMethodConverter(),
-                    new ServiceConverter(),
-                    new JsonLdContextConverter<Context>()
-                }
-            };
+            var settings = new DidJsonSerializerSettings().GetJsonSerializerSettings();
+
 
             var deseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(didDocumentFileContents, settings);
             string reserializedDidDocument = JsonConvert.SerializeObject(deseserializedDidDocument, settings);

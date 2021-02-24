@@ -7,19 +7,11 @@ using Newtonsoft.Json;
 
 namespace DidNet.Json.Newtonsoft.Converters
 {
-    public class VerificationRelationshipConverter<TVerificationRelationship>: JsonConverter<TVerificationRelationship> where TVerificationRelationship : IVerificationRelationship
+    public class VerificationRelationshipConverter<TVerificationRelationship, TVerificationRelationshipImplementation>: JsonConverter<TVerificationRelationship> where TVerificationRelationship : IVerificationRelationship
+    where TVerificationRelationshipImplementation: IVerificationRelationship
     {
-
-        private readonly Dictionary<Type, Type> implementationMapping = new();
-
         public VerificationRelationshipConverter()
         {
-            //TODO something better
-            implementationMapping.Add(typeof(IAssertionMethod), typeof(AssertionMethod));
-            implementationMapping.Add(typeof(IAuthenticationMethod), typeof(AuthenticationMethod));
-            implementationMapping.Add(typeof(ICapabilityDelegationMethod), typeof(CapabilityDelegationMethod));
-            implementationMapping.Add(typeof(ICapabilityInvocationMethod), typeof(CapabilityInvocationMethod));
-            implementationMapping.Add(typeof(IKeyAgreementMethod), typeof(KeyAgreementMethod));
         }
 
         public override void WriteJson(JsonWriter writer, TVerificationRelationship value, JsonSerializer serializer)
@@ -59,10 +51,7 @@ namespace DidNet.Json.Newtonsoft.Converters
                 throw new JsonReaderException();
             }
 
-            var implementation = implementationMapping[typeof(TVerificationRelationship)];
-
-
-            return (TVerificationRelationship) Activator.CreateInstance(implementation,
+            return (TVerificationRelationship) Activator.CreateInstance(typeof(TVerificationRelationshipImplementation),
                 new object[] {constructorParameter!})!;
         }
 

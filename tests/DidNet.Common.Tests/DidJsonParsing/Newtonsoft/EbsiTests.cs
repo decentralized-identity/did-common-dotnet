@@ -1,6 +1,7 @@
 using System.Collections;
 using DidNet.Common.Tests.DidJsonParsing.SystemText;
 using DidNet.Common.Verification;
+using DidNet.Json.Newtonsoft;
 using DidNet.Json.Newtonsoft.Converters;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -24,22 +25,9 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
         public void SerializationSucceeds2(string didDocumentFilename, string didDocumentFileContents)
         {
             TestInfrastructureConstants.ThrowIfPreconditionFails(didDocumentFilename, didDocumentFileContents);
-            
-            var settings = new JsonSerializerSettings()
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                Converters = new JsonConverter[]
-                {
-                    new VerificationRelationshipConverter<IAssertionMethod>(),
-                    new VerificationRelationshipConverter<IAuthenticationMethod>(),
-                    new VerificationRelationshipConverter<ICapabilityDelegationMethod>(),
-                    new VerificationRelationshipConverter<ICapabilityInvocationMethod>(),
-                    new VerificationRelationshipConverter<IKeyAgreementMethod>(),
-                    new VerificationMethodConverter(),
-                    new ServiceConverter(),
-                    new JsonLdContextConverter<Context>()
-                }
-            };
+
+            var settings = new DidJsonSerializerSettings().GetJsonSerializerSettings();
+
 
             var deseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(didDocumentFileContents, settings);
 

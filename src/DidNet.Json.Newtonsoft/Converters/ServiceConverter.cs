@@ -15,15 +15,18 @@ namespace DidNet.Json.Newtonsoft.Converters
     /// <summary>
     /// Converts a <see cref="Service"/> derived object to and from JSON.
     /// </summary>
-    /// <typeparam name="TService">A service type to convert.</typeparam>
-    public class ServiceConverter: JsonConverter<IService>
+    /// <typeparam name="TServiceDefault">The default service type to convert</typeparam>
+    public class ServiceConverter<TServiceDefault>: JsonConverter<IService> where TServiceDefault: IService, new()
     {
-        public static ImmutableDictionary<string, Type> DefaultTypeMap => new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase) { { nameof(IService), typeof(Service) } }.ToImmutableDictionary();
         /// <summary>
         /// A runtime map of <see cref="Service"/> and sub-types.
         /// </summary>
-        private ImmutableDictionary<string, Type> TypeMap { get; }
+        private ImmutableDictionary<string, Type> TypeMap { get; } 
 
+        public ServiceConverter()
+        {
+            TypeMap = new Dictionary<string, Type>().ToImmutableDictionary();
+        }
         /// <summary>
         /// A default constructor for <see cref="Service"/> and sub-type conversions.
         /// </summary>
@@ -33,16 +36,11 @@ namespace DidNet.Json.Newtonsoft.Converters
             TypeMap = typeMap ?? throw new ArgumentNullException(nameof(typeMap));
         }
 
-        public ServiceConverter():this(DefaultTypeMap)
-        {
-            
-        }
-
         public override bool CanWrite { get; } = false;
 
         public override void WriteJson(JsonWriter writer, IService value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, (ServiceExt)value);
+            serializer.Serialize(writer, (TServiceDefault)value);
         }
 
         public override IService ReadJson(JsonReader reader, Type objectType, IService existingValue, bool hasExistingValue, JsonSerializer serializer)
@@ -66,7 +64,7 @@ namespace DidNet.Json.Newtonsoft.Converters
                     return (IService) jObject.ToObject(targetType)!;
                 }
 
-                return (IService) jObject.ToObject(typeof(ServiceExt))!;
+                return (IService) jObject.ToObject(typeof(TServiceDefault))!;
             }
             
             throw new JsonException($"No handler for service \"{serviceType}\" found.");
