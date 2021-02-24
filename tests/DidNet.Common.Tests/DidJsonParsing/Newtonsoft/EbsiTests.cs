@@ -36,11 +36,12 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                     new VerificationRelationshipConverter<ICapabilityInvocationMethod>(),
                     new VerificationRelationshipConverter<IKeyAgreementMethod>(),
                     new VerificationMethodConverter(),
-                    new ServiceConverter()
+                    new ServiceConverter(),
+                    new JsonLdContextConverter<Context>()
                 }
             };
 
-            var deseserializedDidDocument = JsonConvert.DeserializeObject<DidNet.Json.Newtonsoft.DidDocument>(didDocumentFileContents, settings);
+            var deseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(didDocumentFileContents, settings);
 
            
             string reserializedDidDocument = JsonConvert.SerializeObject(deseserializedDidDocument, settings);

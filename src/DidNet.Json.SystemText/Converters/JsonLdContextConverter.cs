@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 namespace DidNet.Json.SystemText
 {
     /// <summary>
-    /// Converts <see cref="Context" to and from JSON.
+    /// Converts <see cref="DidNet.Common.Context" to and from JSON.
     /// Based on DictionaryTKeyEnumTValueConverter
     /// at https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-converters-how-to.
     /// https://w3c.github.io/did-imp-guide/

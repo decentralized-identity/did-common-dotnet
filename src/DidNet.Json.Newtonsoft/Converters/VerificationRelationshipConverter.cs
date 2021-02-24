@@ -1,7 +1,6 @@
 using DidNet.Common.Verification;
 using System;
 using System.Collections.Generic;
-using DidNet.Json.Newtonsoft.Verification;
 using Newtonsoft.Json;
 
 #pragma warning disable CS8765 // Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).ullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).

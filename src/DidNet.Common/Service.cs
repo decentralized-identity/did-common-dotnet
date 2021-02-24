@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.Serialization;
-using DidNet.Common;
-using Newtonsoft.Json;
 
-namespace DidNet.Json.Newtonsoft
+namespace DidNet.Common
 {
 
     /// <summary>
@@ -16,16 +14,15 @@ namespace DidNet.Json.Newtonsoft
     public class Service : IService
     {
         [DataMember(Name ="id")]
-        public Uri? Id { get; set; }
+        public virtual Uri? Id { get; set; }
 
         [DataMember(Name ="type")]
-        public string? Type { get; set; }
+        public virtual string? Type { get; set; }
 
         [DataMember(Name ="serviceEndpoint")]
-        public string? ServiceEndpoint { get; set; }
+        public virtual string? ServiceEndpoint { get; set; }
 
-        [JsonExtensionData]
-        public IDictionary<string, object>? AdditionalData { get; set; }
+        public virtual IDictionary<string, object>? AdditionalData { get; set; }
     }
 }
 

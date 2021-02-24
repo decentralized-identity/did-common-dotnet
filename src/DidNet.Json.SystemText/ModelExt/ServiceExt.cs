@@ -1,29 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using DidNet.Common;
 
-namespace DidNet.Common
+namespace DidNet.Json.SystemText.ModelExt
 {
 
     /// <summary>
     /// https://www.w3.org/TR/did-core/#service-endpoints
     /// </summary>
     [DebuggerDisplay("Service(Id = {Id})")]
-    public class Service : IService
+    public class ServiceExt : Service
     {
         [JsonPropertyName("id")]
-        public Uri? Id { get; set; }
+        public override Uri? Id { get; set; }
 
         [JsonPropertyName("type")]
-        public string? Type { get; set; }
+        public override string? Type { get; set; }
 
         [JsonPropertyName("serviceEndpoint")]
-        public string? ServiceEndpoint { get; set; }
+        public override string? ServiceEndpoint { get; set; }
 
         [JsonExtensionData]
-        public IDictionary<string, object>? AdditionalData { get; set; }
+        public override IDictionary<string, object>? AdditionalData { get; set; }
     }
 }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using DidNet.Common.Verification;
 
 namespace DidNet.Common

@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+using DidNet.Json.SystemText.ModelExt;
 
 namespace DidNet.Common.Tests.DidJsonParsing.SystemText
 {
@@ -8,7 +9,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
     //Quickly done some DTOs to test serialization of more specialized services in DidDocumentTests.
 
     [DebuggerDisplay("OpenIdConnectVersion1(Id = {Id})")]
-    public class OpenIdConnectVersion1: Service
+    public class OpenIdConnectVersion1: ServiceExt
     { }
 
 
@@ -23,7 +24,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
     }
 
     [DebuggerDisplay("SocialWebInboxService(Id = {Id})")]
-    public class SocialWebInboxService: Service
+    public class SocialWebInboxService: ServiceExt
     {
         [DataMember(Name = "description")]
         public string? Description { get; set; }
@@ -34,7 +35,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
 
 
     [DebuggerDisplay("VerifiableCredentialService(Id = {Id})")]
-    public class VerifiableCredentialService: Service
+    public class VerifiableCredentialService: ServiceExt
     {
     }
 }

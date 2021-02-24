@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using DidNet.Common.Tests.DidJsonParsing.SystemText;
 using DidNet.Common.Verification;
 using DidNet.Json.Newtonsoft.Converters;
+using DidNet.Json.Newtonsoft.ModelExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -137,14 +138,14 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
             var serviceTypeMap = new Dictionary<string, Type>(ServiceConverter.DefaultTypeMap)
             {
                 { "OpenIdConnectVersion1.0Service", typeof(OpenIdConnectVersion1) },
-                { "CredentialRepositoryService", typeof(DidNet.Json.Newtonsoft.Service) },
-                { "XdiService", typeof(DidNet.Json.Newtonsoft.Service) },
-                { "AgentService", typeof(DidNet.Json.Newtonsoft.Service) },
-                { "IdentityHub", typeof(DidNet.Json.Newtonsoft.Service) },
-                { "MessagingService", typeof(DidNet.Json.Newtonsoft.Service) },
+                { "CredentialRepositoryService", typeof(ServiceExt) },
+                { "XdiService", typeof(ServiceExt) },
+                { "AgentService", typeof(ServiceExt) },
+                { "IdentityHub", typeof(ServiceExt) },
+                { "MessagingService", typeof(ServiceExt) },
                 { "SocialWebInboxService", typeof(SocialWebInboxService) },
                 { "VerifiableCredentialService", typeof(VerifiableCredentialService) },
-                { "DidAuthPushModeVersion1", typeof(DidNet.Json.Newtonsoft.Service) }
+                { "DidAuthPushModeVersion1", typeof(ServiceExt) }
             };
 
 
@@ -161,15 +162,15 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                     new VerificationRelationshipConverter<IKeyAgreementMethod>(),
                     new VerificationMethodConverter(),
                     new ServiceConverter(serviceTypeMap.ToImmutableDictionary()),
-                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
+                    new JsonLdContextConverter<Context>()
                 }
             };
 
-            var deseserializedDidDocument = JsonConvert.DeserializeObject<DidNet.Json.Newtonsoft.DidDocument>(MultiServiceTestDocument, settings);
+            var deseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(MultiServiceTestDocument, settings);
 
             string reserializedDidDocument = JsonConvert.SerializeObject(deseserializedDidDocument, settings);
 
-            var reredeseserializedDidDocument = JsonConvert.DeserializeObject<DidNet.Json.Newtonsoft.DidDocument>(reserializedDidDocument, settings);
+            var reredeseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(reserializedDidDocument, settings);
 
             ////All the DID documents need to have an ID and a context. This one needs to have also a strongly type element.
             ////The strongly typed services should be in document order (e.g. not in type map order).
@@ -180,7 +181,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
             Assert.IsType<OpenIdConnectVersion1>(deseserializedDidDocument!.Service![0]);
             Assert.IsType<VerifiableCredentialService>(deseserializedDidDocument!.Service![5]);
             Assert.IsType<SocialWebInboxService>(deseserializedDidDocument!.Service![6]);
-            Assert.IsType<DidNet.Json.Newtonsoft.Service>(deseserializedDidDocument!.Service![7]);
+            Assert.IsType<ServiceExt>(deseserializedDidDocument!.Service![7]);
 
             Assert.True(JToken.DeepEquals(JToken.Parse(MultiServiceTestDocument), JToken.Parse(reserializedDidDocument)));
         }
@@ -217,15 +218,15 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                     new VerificationRelationshipConverter<IKeyAgreementMethod>(),
                     new VerificationMethodConverter(),
                     new ServiceConverter(serviceTypeMap.ToImmutableDictionary()),
-                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
+                    new JsonLdContextConverter<Context>()
                 }
             };
 
-            var deseserializedDidDocument = JsonConvert.DeserializeObject<DidNet.Json.Newtonsoft.DidDocument>(didDocumentFileContents, settings);
+            var deseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(didDocumentFileContents, settings);
 
             string reserializedDidDocument = JsonConvert.SerializeObject(deseserializedDidDocument, settings);
 
-            var reredeseserializedDidDocument = JsonConvert.DeserializeObject<DidNet.Json.Newtonsoft.DidDocument>(reserializedDidDocument, settings);
+            var reredeseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(reserializedDidDocument, settings);
 
             //All the DID documents need to have an ID and a context. This one needs to have also a strongly type element.
             Assert.NotNull(deseserializedDidDocument?.Id);
@@ -265,11 +266,11 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                     new VerificationRelationshipConverter<IKeyAgreementMethod>(),
                     new VerificationMethodConverter(),
                     new ServiceConverter(serviceTypeMap.ToImmutableDictionary()),
-                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
+                    new JsonLdContextConverter<Context>()
                 }
             };
 
-            var deseserializedDidDocument = JsonConvert.DeserializeObject<DidNet.Json.Newtonsoft.DidDocument>(didDocumentFileContents, settings);
+            var deseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(didDocumentFileContents, settings);
 
             string reserializedDidDocument = JsonConvert.SerializeObject(deseserializedDidDocument, settings);
 
@@ -278,7 +279,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
           //  Assert.NotNull(deseserializedDidDocument?.Context);
             Assert.NotNull(deseserializedDidDocument?.Service);
             Assert.NotNull(reserializedDidDocument);
-            Assert.IsType<Json.Newtonsoft.Service>(deseserializedDidDocument!.Service![0]);
+            Assert.IsType<ServiceExt>(deseserializedDidDocument!.Service![0]);
 
             Assert.True(JToken.DeepEquals(JToken.Parse(didDocumentFileContents), JToken.Parse(reserializedDidDocument)));
         }
@@ -309,11 +310,11 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                     new VerificationRelationshipConverter<IKeyAgreementMethod>(),
                     new VerificationMethodConverter(),
                     new ServiceConverter(),
-                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
+                    new JsonLdContextConverter<Context>()
                 }
             };
 
-            var deseserializedDidDocument = JsonConvert.DeserializeObject<DidNet.Json.Newtonsoft.DidDocument>(didDocumentFileContents, settings);
+            var deseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(didDocumentFileContents, settings);
             string reserializedDidDocument = JsonConvert.SerializeObject(deseserializedDidDocument, settings);
             Debug.WriteLine(reserializedDidDocument);
 
@@ -344,11 +345,11 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                     new VerificationRelationshipConverter<IKeyAgreementMethod>(),
                     new VerificationMethodConverter(),
                     new ServiceConverter(),
-                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
+                    new JsonLdContextConverter<Context>()
                 }
             };
 
-            var deseserializedDidDocument = JsonConvert.DeserializeObject<DidNet.Json.Newtonsoft.DidDocument>(didDocumentFileContents, settings);
+            var deseserializedDidDocument = JsonConvert.DeserializeObject<Json.Newtonsoft.ModelExt.DidDocumentExt>(didDocumentFileContents, settings);
             string reserializedDidDocument = JsonConvert.SerializeObject(deseserializedDidDocument, settings);
             Debug.WriteLine(reserializedDidDocument);
 
@@ -368,7 +369,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
     //Quickly done some DTOs to test serialization of more specialized services in DidDocumentTests.
 
     [DebuggerDisplay("OpenIdConnectVersion1(Id = {Id})")]
-    public class OpenIdConnectVersion1 : DidNet.Json.Newtonsoft.Service
+    public class OpenIdConnectVersion1 : ServiceExt
     { }
 
 
@@ -385,7 +386,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
 
     [DebuggerDisplay("SocialWebInboxService(Id = {Id})")]
     [DataContract]
-    public class SocialWebInboxService : DidNet.Json.Newtonsoft.Service
+    public class SocialWebInboxService : ServiceExt
     {
         [DataMember(Name = "description")]
         public string? Description { get; set; }
@@ -397,7 +398,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
 
     [DebuggerDisplay("VerifiableCredentialService(Id = {Id})")]
     [DataContract]
-    public class VerifiableCredentialService : DidNet.Json.Newtonsoft.Service
+    public class VerifiableCredentialService : ServiceExt
     {
     }
 }

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using DidNet.Common.PublicKey;
 using DidNet.Common.Verification;
-using DidNet.Json.Newtonsoft.PublicKey;
-using DidNet.Json.Newtonsoft.Verification;
+using DidNet.Json.Newtonsoft.ModelExt.PublicKey;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -23,7 +22,7 @@ namespace DidNet.Json.Newtonsoft.Converters
                 { "publicKeyBase58", jObject => new PublicKeyBase58(jObject.ToString()) },
                 { "publicKeyPem", jObject => new PublicKeyPem(jObject.ToString())},
                 { "publicKeyHex", jObject => new PublicKeyHex(jObject.ToString()) },
-                { "publicKeyJwk", jObject => jObject.ToObject<PublicKeyJwk>()! }
+                { "publicKeyJwk", jObject => jObject.ToObject<PublicKeyJwkExt>()! }
 
             }.ToImmutableDictionary();
 

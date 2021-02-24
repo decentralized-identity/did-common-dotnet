@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Text.Json.Serialization;
 using DidNet.Common.Verification;
 
 namespace DidNet.Common
 {
+
     /// <summary>
     /// https://w3c.github.io/did-core/
     /// </summary>
@@ -16,72 +16,70 @@ namespace DidNet.Common
     [DataContract]
     public class DidDocument : IEquatable<DidDocument>, IDidDocument
     {
-
         /// <summary>
         /// https://w3c.github.io/did-core/#did-subject
         /// </summary>
-        [JsonPropertyName("@context")]
-        public IContext? Context { get; set; }
+        [DataMember(Name = "@context")]
+        public virtual IContext? Context { get; set; }
 
         //TODO: Add alsoKnownAs attribute. How is it modelled in the document? Continue the one GH thread.
 
         /// <summary>
         /// https://w3c.github.io/did-core/#did-subject
         /// </summary>
-        [JsonPropertyName("id")]
-        public Uri? Id { get; set; }
+        [DataMember(Name = "id")]
+        public virtual Uri? Id { get; set; }
 
         //TODO: Make this a Controller class, maybe with implicit and explicit conversion to and from string. Same for some key formats?
         /// <summary>
         /// https://w3c.github.io/did-core/#control
         /// </summary>
-        [JsonPropertyName("controller")]
-        public string[]? Controller { get; set; }
+        [DataMember(Name = "controller")]
+        public virtual string[]? Controller { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#verification-methods
         /// </summary>
-        [JsonPropertyName("verificationMethod")]
-        public IVerificationMethod[]? VerificationMethod { get; set; }
+        [DataMember(Name = "verificationMethod")]
+        public virtual IVerificationMethod[]? VerificationMethod { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#authentication
         /// </summary>
-        [JsonPropertyName("authentication")]
-        public IAuthenticationMethod[]? Authentication { get; set; }
+        [DataMember(Name = "authentication")]
+        public virtual IAuthenticationMethod[]? Authentication { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#assertionmethod
         /// </summary>
-        [JsonPropertyName("assertionMethod")]
-        public IAssertionMethod[]? AssertionMethod { get; set; }
+        [DataMember(Name = "assertionMethod")]
+        public virtual IAssertionMethod[]? AssertionMethod { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#keyagreement
         /// </summary>
-        [JsonPropertyName("keyAgreement")]
-        public IKeyAgreementMethod[]? KeyAgreement { get; set; }
+        [DataMember(Name = "keyAgreement")]
+        public virtual IKeyAgreementMethod[]? KeyAgreement { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#capabilitydelegation
         /// </summary>
-        [JsonPropertyName("capabilityDelegation")]
-        public ICapabilityDelegationMethod[]? CapabilityDelegation { get; set; }
+        [DataMember(Name = "capabilityDelegation")]
+        public virtual ICapabilityDelegationMethod[]? CapabilityDelegation { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#capabilityinvocation
         /// </summary>
-        [JsonPropertyName("capabilityInvocation")]
-        public ICapabilityInvocationMethod[]? CapabilityInvocation { get; set; }
+        [DataMember(Name = "capabilityInvocation")]
+        public virtual ICapabilityInvocationMethod[]? CapabilityInvocation { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#service-endpoints
         /// </summary>
-        [JsonPropertyName("service")]
-        public IService[]? Service { get; set; }
+        [DataMember(Name = "service")]
+        public virtual IService[]? Service { get; set; }
 
-        [JsonExtensionData]
-        public IDictionary<string, object>? AdditionalData { get; set; }
+        public virtual IDictionary<string, object>? AdditionalData { get; set; }
 
         //TODO: The following as JSON Extension data + plus inherited from the converter?
 

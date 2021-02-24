@@ -46,7 +46,7 @@ namespace DidNet.Json.SystemText
         /// <summary>
         /// A default constructor for <see cref="VerificationMethod"/> and sub-type conversions.
         /// </summary>
-        /// <param name="typeMap">A runtime map of <see cref="Service"/> and sub-types.</param>
+        /// <param name="typeMap">A runtime map of <see cref="DidNet.Common.Service"/> and sub-types.</param>
         public VerificationMethodConverter(ImmutableDictionary<string, Func<string, JsonSerializerOptions, IKeyFormat>> typeMap)
         {
             TypeMap =  typeMap ?? throw new ArgumentNullException(nameof(typeMap));

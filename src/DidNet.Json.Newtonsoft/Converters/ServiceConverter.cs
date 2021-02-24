@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using DidNet.Common;
+using DidNet.Json.Newtonsoft.ModelExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -41,7 +42,7 @@ namespace DidNet.Json.Newtonsoft.Converters
 
         public override void WriteJson(JsonWriter writer, IService value, JsonSerializer serializer)
         {
-            serializer.Serialize(writer, (Service)value);
+            serializer.Serialize(writer, (ServiceExt)value);
         }
 
         public override IService ReadJson(JsonReader reader, Type objectType, IService existingValue, bool hasExistingValue, JsonSerializer serializer)
@@ -65,7 +66,7 @@ namespace DidNet.Json.Newtonsoft.Converters
                     return (IService) jObject.ToObject(targetType)!;
                 }
 
-                return (IService) jObject.ToObject(typeof(Service))!;
+                return (IService) jObject.ToObject(typeof(ServiceExt))!;
             }
             
             throw new JsonException($"No handler for service \"{serviceType}\" found.");

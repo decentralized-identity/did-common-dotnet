@@ -8,6 +8,7 @@ using System.Text.Json;
 using DidNet.Common.Tests.DidJsonParsing.SystemText;
 using DidNet.Json.Newtonsoft.Converters;
 using DidNet.Json.SystemText;
+using DidNet.Json.SystemText.ModelExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -76,7 +77,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
         [Fact]
         public void RoundtripServiceTest1()
         {
-            var service = JsonConvert.DeserializeObject<DidNet.Json.Newtonsoft.Service>(TestService1);
+            var service = JsonConvert.DeserializeObject<ServiceExt>(TestService1);
             Assert.NotNull(service);
 
             var roundTrippedJson = JsonConvert.SerializeObject(service);
@@ -96,14 +97,14 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                 DefaultValueHandling = DefaultValueHandling.Ignore,
                 Converters = new JsonConverter[]
                 {
-                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
+                    new JsonLdContextConverter<Context>()
                 }
             };
 
             var context = JsonConvert.DeserializeObject<IContext>(OneUriContext, settings);
             Assert.NotNull(context);
 
-            var roundTrippedJson = JsonConvert.SerializeObject(context);
+            var roundTrippedJson = JsonConvert.SerializeObject(context, settings);
             Assert.NotNull(roundTrippedJson);
 
             Assert.True(JToken.DeepEquals(JToken.Parse(OneUriContext), JToken.Parse(roundTrippedJson)));
@@ -119,7 +120,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                 DefaultValueHandling = DefaultValueHandling.Ignore,
                 Converters = new JsonConverter[]
                 {
-                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
+                    new JsonLdContextConverter<Context>()
                 }
             };
 
@@ -142,7 +143,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                 DefaultValueHandling = DefaultValueHandling.Ignore,
                 Converters = new JsonConverter[]
                 {
-                    new JsonLdContextConverter<DidNet.Json.Newtonsoft.Context>()
+                    new JsonLdContextConverter<Context>()
                 }
             };
 
