@@ -8,89 +8,90 @@ using DidNet.Common.Verification;
 
 namespace DidNet.Common
 {
+
     /// <summary>
     /// https://w3c.github.io/did-core/
     /// </summary>
     [DebuggerDisplay("DidDocument(Id = {Id})")]
     [DataContract]
-    public class DidDocument : IEquatable<DidDocument>
+    public class DidDocument : IEquatable<DidDocument>, IDidDocument
     {
         /// <summary>
         /// https://w3c.github.io/did-core/#did-subject
         /// </summary>
-        [DataMember(Name ="@context")]
-        public Context? Context { get; set; }
+        [DataMember(Name = "@context")]
+        public virtual IContext? Context { get; set; }
 
         //TODO: Add alsoKnownAs attribute. How is it modelled in the document? Continue the one GH thread.
 
         /// <summary>
         /// https://w3c.github.io/did-core/#did-subject
         /// </summary>
-        [DataMember(Name ="id")]
-        public Uri? Id { get; set; }
+        [DataMember(Name = "id")]
+        public virtual Uri? Id { get; set; }
 
         //TODO: Make this a Controller class, maybe with implicit and explicit conversion to and from string. Same for some key formats?
         /// <summary>
         /// https://w3c.github.io/did-core/#control
         /// </summary>
-        [DataMember(Name ="controller")]
-        public string[]? Controller { get; set; }
+        [DataMember(Name = "controller")]
+        public virtual string[]? Controller { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#verification-methods
         /// </summary>
-        [DataMember(Name ="verificationMethod")]
-        public VerificationMethod[]? VerificationMethod { get; set; }
+        [DataMember(Name = "verificationMethod")]
+        public virtual IVerificationMethod[]? VerificationMethod { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#authentication
         /// </summary>
-        [DataMember(Name ="authentication")]
-        public AuthenticationMethod[]? Authentication { get; set; }
+        [DataMember(Name = "authentication")]
+        public virtual IAuthenticationMethod[]? Authentication { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#assertionmethod
         /// </summary>
-        [DataMember(Name ="assertionMethod")]
-        public AssertionMethod[]? AssertionMethod { get; set; }
+        [DataMember(Name = "assertionMethod")]
+        public virtual IAssertionMethod[]? AssertionMethod { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#keyagreement
         /// </summary>
-        [DataMember(Name ="keyAgreement")]
-        public KeyAgreementMethod[]? KeyAgreement { get; set; }
+        [DataMember(Name = "keyAgreement")]
+        public virtual IKeyAgreementMethod[]? KeyAgreement { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#capabilitydelegation
         /// </summary>
-        [DataMember(Name ="capabilityDelegation")]
-        public CapabilityDelegationMethod[]? CapabilityDelegation { get; set; }
+        [DataMember(Name = "capabilityDelegation")]
+        public virtual ICapabilityDelegationMethod[]? CapabilityDelegation { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#capabilityinvocation
         /// </summary>
-        [DataMember(Name ="capabilityInvocation")]
-        public CapabilityInvocationMethod[]? CapabilityInvocation { get; set; }
+        [DataMember(Name = "capabilityInvocation")]
+        public virtual ICapabilityInvocationMethod[]? CapabilityInvocation { get; set; }
 
         /// <summary>
         /// https://w3c.github.io/did-core/#service-endpoints
         /// </summary>
-        [DataMember(Name ="service")]
-        public Service[]? Service { get; set; }
+        [DataMember(Name = "service")]
+        public virtual IService[]? Service { get; set; }
 
-        public IDictionary<string, object>? AdditionalData { get; set; }
+        public virtual IDictionary<string, object>? AdditionalData { get; set; }
 
         //TODO: The following as JSON Extension data + plus inherited from the converter?
 
         /// <summary>
         /// https://www.w3.org/TR/did-spec-registries/#created
         /// </summary>
-        /*[DataMember(Name ="created")]
+        /*[JsonPropertyName("created")]
         public DateTimeOffset? Created { get; set; }
         /// <summary>
         /// https://www.w3.org/TR/did-spec-registries/#updated
         /// </summary>
-        [DataMember(Name ="updated")]
+        [JsonPropertyName("updated")]
         public DateTimeOffset? Updated { get; set; }*/
 
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -14,7 +14,7 @@ namespace DidNet.Json.SystemText
     {
         public override bool CanConvert(Type typeToConvert)
         {
-            return typeof(VerificationRelationship).IsAssignableFrom(typeToConvert);
+            return typeof(IVerificationRelationship).IsAssignableFrom(typeToConvert);
         }
 
 

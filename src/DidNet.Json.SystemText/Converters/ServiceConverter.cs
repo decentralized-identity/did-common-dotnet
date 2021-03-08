@@ -4,26 +4,28 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DidNet.Common;
+using DidNet.Common.Verification;
 using DidNet.Json.SystemText.Converters;
+using DidNet.Json.SystemText.ModelExt;
 
 namespace DidNet.Json.SystemText
 {
     /// <summary>
-    /// Converts a <see cref="Service"/> derived object to and from JSON.
+    /// Converts a <see cref="DidNet.Common.Service"/> derived object to and from JSON.
     /// </summary>
     /// <typeparam name="T">A service type to convert.</typeparam>
-    public class ServiceConverter<T>: JsonConverter<T> where T: Service
+    public class ServiceConverter<T>: JsonConverter<T> where T: IService
     {
         /// <summary>
-        /// A runtime map of <see cref="Service"/> and sub-types.
+        /// A runtime map of <see cref="DidNet.Common.Service"/> and sub-types.
         /// </summary>
         private ImmutableDictionary<string, Type> TypeMap { get; }
 
 
         /// <summary>
-        /// A default constructor for <see cref="Service"/> and sub-type conversions.
+        /// A default constructor for <see cref="DidNet.Common.Service"/> and sub-type conversions.
         /// </summary>
-        /// <param name="typeMap">A runtime map of of <see cref="Service"/> and sub-types.</param>
+        /// <param name="typeMap">A runtime map of of <see cref="DidNet.Common.Service"/> and sub-types.</param>
         public ServiceConverter(ImmutableDictionary<string, Type> typeMap)
         {
             TypeMap = typeMap ?? throw new ArgumentNullException(nameof(typeMap));
@@ -53,7 +55,11 @@ namespace DidNet.Json.SystemText
 
                 var namePolicyOptions = new JsonSerializerOptions
                 {
-                    PropertyNamingPolicy = new JsonCaseNamingPolicy()
+                    Converters =
+                    {
+                        new TypeMappingConverter<IService, ServiceExt>(),
+                    },
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
 
                 if (!string.IsNullOrEmpty(serviceType))
@@ -63,7 +69,9 @@ namespace DidNet.Json.SystemText
                         return (T)JsonSerializer.Deserialize(ref elementStartPosition, targetType, namePolicyOptions)!;
                     }
 
-                    return (T)JsonSerializer.Deserialize<Service>(ref elementStartPosition, namePolicyOptions)!;
+                    var service = JsonSerializer.Deserialize<IService>(ref elementStartPosition, namePolicyOptions)!;
+
+                    return (T)service;
                 }
 
                 throw new JsonException($"No handler for service \"{serviceType}\" found.");
@@ -76,7 +84,12 @@ namespace DidNet.Json.SystemText
         {
             var namePolicyOptions = new JsonSerializerOptions
             {
-                PropertyNamingPolicy = new JsonCaseNamingPolicy()
+                Converters =
+                {
+                    new TypeMappingConverter<IService, ServiceExt>(),
+                },
+
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
             JsonSerializer.Serialize(writer, value, value.GetType(), namePolicyOptions);

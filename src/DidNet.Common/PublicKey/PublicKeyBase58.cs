@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
 namespace DidNet.Common.PublicKey
 {
     [DebuggerDisplay("PublicKeyBase58({Key})")]
-    public class PublicKeyBase58 : KeyFormat
+    public class PublicKeyBase58 : KeyFormat, IPublicKeyBase58
     {
         public string Key { get; set; }
 

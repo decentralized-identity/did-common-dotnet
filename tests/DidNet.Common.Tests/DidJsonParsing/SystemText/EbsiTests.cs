@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Text.Json;
 using DidNet.Json.SystemText;
+using DidNet.Json.SystemText.ModelExt;
 using Xunit;
 
 namespace DidNet.Common.Tests.DidJsonParsing.SystemText
@@ -33,7 +34,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
                 }
             };
 
-            DidDocument? deseserializedDidDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
+            var deseserializedDidDocument = JsonSerializer.Deserialize<DidDocumentExt>(didDocumentFileContents, options);
             string reserializedDidDocument = JsonSerializer.Serialize(deseserializedDidDocument, options);
 
             //All the DID documents need to have an ID and a context. This one needs to have also a strongly type element.

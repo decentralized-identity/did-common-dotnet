@@ -20,7 +20,7 @@ namespace DidNet.Json.SystemText
         /// TODO: What are the standardized services in https://www.w3.org/TR/did-spec-registries/ and could be here? The rest ought to be moved out.
         /// When refactoring TODO, retain this observation: Service needs to be always handled unless the library user explicitly removes it.
         /// </summary>
-        public static ImmutableDictionary<string, Type> DefaultTypeMap => new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase) { { nameof(Service), typeof(Service) } }.ToImmutableDictionary();
+        public static ImmutableDictionary<string, Type> DefaultTypeMap => new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase) { { nameof(IService), typeof(IService) } }.ToImmutableDictionary();
 
         private ImmutableDictionary<string, Type> TypeMap { get; }
 

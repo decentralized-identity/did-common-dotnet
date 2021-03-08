@@ -1,10 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
+using DidNet.Common;
+using DidNet.Common.Tests;
+using DidNet.Common.Tests.DidJsonParsing.SystemText;
+using DidNet.Common.Verification;
 using DidNet.Json.SystemText;
 using DidNet.Json.SystemText.Converters;
+using DidNet.Json.SystemText.ModelExt;
 using Xunit;
 
 namespace DidNet.Common.Tests.DidJsonParsing.SystemText
@@ -131,33 +137,38 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
             var serviceTypeMap = new Dictionary<string, Type>(ServiceConverterFactory.DefaultTypeMap)
             {
                 { "OpenIdConnectVersion1.0Service", typeof(OpenIdConnectVersion1) },
-                { "CredentialRepositoryService", typeof(Service) },
-                { "XdiService", typeof(Service) },
-                { "AgentService", typeof(Service) },
-                { "IdentityHub", typeof(Service) },
-                { "MessagingService", typeof(Service) },
+                { "CredentialRepositoryService", typeof(IService) },
+                { "XdiService", typeof(IService) },
+                { "AgentService", typeof(IService) },
+                { "IdentityHub", typeof(IService) },
+                { "MessagingService", typeof(IService) },
                 { "SocialWebInboxService", typeof(SocialWebInboxService) },
                 { "VerifiableCredentialService", typeof(VerifiableCredentialService) },
-                { "DidAuthPushModeVersion1", typeof(Service) }
+                { "DidAuthPushModeVersion1", typeof(IService) }
             };
 
             var options = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
+
                 Converters =
                 {
                     new VerificationRelationshipConverterFactory(),
                     new VerificationMethodConverter(),
                     new ServiceConverterFactory(serviceTypeMap.ToImmutableDictionary()),
-                    new JsonLdContextConverter()
+                    new JsonLdContextConverter(),
+                    new TypeMappingConverter<IDidDocument, DidDocumentExt>(),
+
                 },
-                PropertyNamingPolicy = new JsonCaseNamingPolicy()
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
+
 
       
 
-            DidDocument? deseserializedDidDocument = JsonSerializer.Deserialize<DidDocument>(MultiServiceTestDocument, options);
+            var deseserializedDidDocument = JsonSerializer.Deserialize<IDidDocument>(MultiServiceTestDocument, options);
             string reserializedDidDocument = JsonSerializer.Serialize(deseserializedDidDocument, options);
+            var reredeseserializedDidDocument = JsonSerializer.Deserialize<IDidDocument>(reserializedDidDocument, options);
 
             //All the DID documents need to have an ID and a context. This one needs to have also a strongly type element.
             //The strongly typed services should be in document order (e.g. not in type map order).
@@ -168,7 +179,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
             Assert.IsType<OpenIdConnectVersion1>(deseserializedDidDocument!.Service![0]);
             Assert.IsType<VerifiableCredentialService>(deseserializedDidDocument!.Service![5]);
             Assert.IsType<SocialWebInboxService>(deseserializedDidDocument!.Service![6]);
-            Assert.IsType<Service>(deseserializedDidDocument!.Service![7]);
+            Assert.IsType<ServiceExt>(deseserializedDidDocument!.Service![7]);
 
             var comparer = new JsonElementComparer();
             using var originalDIDDocument = JsonDocument.Parse(MultiServiceTestDocument);
@@ -197,17 +208,20 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
             var options = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
+
                 Converters =
                 {
                     new VerificationRelationshipConverterFactory(),
                     new VerificationMethodConverter(),
                     new ServiceConverterFactory(serviceTypeMap.ToImmutableDictionary()),
-                    new JsonLdContextConverter()
+                    new JsonLdContextConverter(),
+                    new TypeMappingConverter<IDidDocument, DidDocumentExt>(),
+
                 },
-                PropertyNamingPolicy = new JsonCaseNamingPolicy()
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
-            DidDocument? deseserializedDidDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
+            var deseserializedDidDocument = JsonSerializer.Deserialize<IDidDocument>(didDocumentFileContents, options);
             string reserializedDidDocument = JsonSerializer.Serialize(deseserializedDidDocument, options);
 
             //All the DID documents need to have an ID and a context. This one needs to have also a strongly type element.
@@ -246,12 +260,14 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
                     new VerificationRelationshipConverterFactory(),
                     new VerificationMethodConverter(),
                     new ServiceConverterFactory(serviceTypeMap.ToImmutableDictionary()),
-                    new JsonLdContextConverter()
+                    new JsonLdContextConverter(),
+                    new TypeMappingConverter<IDidDocument, DidDocumentExt>(),
+
                 },
-                PropertyNamingPolicy = new JsonCaseNamingPolicy()
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
-            DidDocument? deseserializedDidDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
+            var deseserializedDidDocument = JsonSerializer.Deserialize<IDidDocument>(didDocumentFileContents, options);
             string reserializedDidDocument = JsonSerializer.Serialize(deseserializedDidDocument, options);
 
             //All the DID documents need to have an ID and a context. This one needs to have also a strongly type element.
@@ -259,7 +275,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
             Assert.NotNull(deseserializedDidDocument?.Context);
             Assert.NotNull(deseserializedDidDocument?.Service);
             Assert.NotNull(reserializedDidDocument);
-            Assert.IsType<Service>(deseserializedDidDocument!.Service![0]);
+            Assert.IsType<ServiceExt>(deseserializedDidDocument!.Service![0]);
 
             var comparer = new JsonElementComparer();
             using var originalDIDDocument = JsonDocument.Parse(didDocumentFileContents);
@@ -290,11 +306,12 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
                     new ServiceConverterFactory(),
                     new JsonLdContextConverter()
                 },
-                PropertyNamingPolicy = new JsonCaseNamingPolicy()
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
-            DidDocument? deseserializedDidDocument = JsonSerializer.Deserialize<DidDocument>(didDocumentFileContents, options);
+            var deseserializedDidDocument = JsonSerializer.Deserialize<DidDocumentExt>(didDocumentFileContents, options);
             string reserializedDidDocument = JsonSerializer.Serialize(deseserializedDidDocument, options);
+            Debug.WriteLine(reserializedDidDocument);
 
             //All the DID documents need to have an ID and a context.
             Assert.NotNull(deseserializedDidDocument?.Id);
