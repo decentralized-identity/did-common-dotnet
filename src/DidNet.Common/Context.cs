@@ -9,7 +9,7 @@ namespace DidNet.Common
     /// </summary>
     public class Context : IContext
     {
-        public virtual ICollection<string>? Contexes { get; set; }
+        public virtual ICollection<ContextData>? Contexes { get; set; }
 
         public virtual IDictionary<string, object>? AdditionalData { get; set; }
     }
