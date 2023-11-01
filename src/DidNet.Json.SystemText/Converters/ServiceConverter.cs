@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DidNet.Common;
-using DidNet.Common.Verification;
 using DidNet.Json.SystemText.Converters;
 using DidNet.Json.SystemText.ModelExt;
 
@@ -14,7 +13,7 @@ namespace DidNet.Json.SystemText
     /// Converts a <see cref="DidNet.Common.Service"/> derived object to and from JSON.
     /// </summary>
     /// <typeparam name="T">A service type to convert.</typeparam>
-    public class ServiceConverter<T>: JsonConverter<T> where T: IService
+    public class ServiceConverter<T> : JsonConverter<T> where T : IService
     {
         /// <summary>
         /// A runtime map of <see cref="DidNet.Common.Service"/> and sub-types.
@@ -36,7 +35,7 @@ namespace DidNet.Json.SystemText
         [return: NotNull]
         public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if(reader.TokenType != JsonTokenType.StartObject)
+            if (reader.TokenType != JsonTokenType.StartObject)
             {
                 ThrowHelper.ThrowJsonException();
             }
@@ -44,7 +43,7 @@ namespace DidNet.Json.SystemText
             //Parsing the document forwards moves the index. The element start position
             //is stored to a temporary variable here so it can be given directly to JsonSerializer.
             var elementStartPosition = reader;
-            using(var jsonDocument = JsonDocument.ParseValue(ref reader))
+            using (var jsonDocument = JsonDocument.ParseValue(ref reader))
             {
                 //TODO: This discriminator can be lifted and this converter generalized further.
                 //While the Factory can instantiate the generalized version with a specific
@@ -58,13 +57,14 @@ namespace DidNet.Json.SystemText
                     Converters =
                     {
                         new TypeMappingConverter<IService, ServiceExt>(),
+                        new ServiceEndpointDataConverter(),
                     },
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 };
 
                 if (!string.IsNullOrEmpty(serviceType))
                 {
-                    if(TypeMap.TryGetValue(serviceType, out var targetType))
+                    if (TypeMap.TryGetValue(serviceType, out var targetType))
                     {
                         return (T)JsonSerializer.Deserialize(ref elementStartPosition, targetType, namePolicyOptions)!;
                     }
@@ -87,6 +87,7 @@ namespace DidNet.Json.SystemText
                 Converters =
                 {
                     new TypeMappingConverter<IService, ServiceExt>(),
+                    new ServiceEndpointDataConverter(),
                 },
 
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase

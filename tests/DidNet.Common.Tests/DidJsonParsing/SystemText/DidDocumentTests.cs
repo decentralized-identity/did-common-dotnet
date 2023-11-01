@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using DidNet.Common;
 using DidNet.Common.Tests;
 using DidNet.Common.Tests.DidJsonParsing.SystemText;

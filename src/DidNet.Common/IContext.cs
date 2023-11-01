@@ -1,4 +1,3 @@
-using DidDocumentResolver.DifCommonModels.Common;
 using System.Collections.Generic;
 
 namespace DidNet.Common

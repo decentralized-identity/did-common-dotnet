@@ -15,70 +15,85 @@ namespace DidNet.Json.SystemText
     /// at https://docs.microsoft.com/en-us/dotnet/standard/serialization/system-text-json-converters-how-to.
     /// https://w3c.github.io/did-imp-guide/
     /// </summary>
-    public class JsonLdContextConverter: JsonConverter<IContext>
+    public class JsonLdContextConverter : JsonConverter<IContext>
     {
         public override IContext Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             //The DID JSON-LD context starts either with a single string, array of strings or is an object that can
             //contain whatever elements.
-            var context = new Context { Contexes = new Collection<string>(), AdditionalData = new Dictionary<string, object>() };
+            var context = new Context { Contexes = new Collection<ContextData>(), AdditionalData = new Dictionary<string, object>() };
             var tokenType = reader.TokenType;
-            if(reader.TokenType == JsonTokenType.PropertyName)
+            if (reader.TokenType == JsonTokenType.PropertyName)
             {
                 var propertyName = reader.GetString();
-                if(propertyName == "@context")
+                if (propertyName == "@context")
                 {
                     _ = reader.Read();
                 }
             }
 
-            if(tokenType == JsonTokenType.String)
+            if (tokenType == JsonTokenType.String)
             {
                 var ctx = reader.GetString();
-                if(ctx != null)
+                if (ctx != null)
                 {
-                    context.Contexes.Add(ctx);
+                    context.Contexes.Add(new ContextData(ctx));
                 }
 
                 return context;
             }
 
-            if(tokenType == JsonTokenType.StartArray)
+            if (tokenType == JsonTokenType.StartArray)
             {
-                var strList = JsonSerializer.Deserialize<string[]>(ref reader);
-                if(strList != null)
+                var strList = JsonSerializer.Deserialize<JsonElement[]>(ref reader);
+                if (strList != null)
                 {
-                    for(int i = 0; i < strList.Length; i++)
+                    for (var i = 0; i < strList.Length; i++)
                     {
-                        string s = strList[i];
-                        context.Contexes.Add(s);
+                        var s = strList[i];
+                        if (s.ValueKind.Equals(JsonValueKind.String))
+                        {
+#pragma warning disable CS8604 // Possible null reference argument.
+                            context.Contexes.Add(new ContextData(context: s.GetString()));
+#pragma warning restore CS8604 // Possible null reference argument.
+                        }
+                        else if (s.ValueKind.Equals(JsonValueKind.Object))
+                        {
+#pragma warning disable CS8604 // Possible null reference argument.
+                            context.Contexes.Add(new ContextData(JsonSerializer.Deserialize<Dictionary<string, string>>(s.GetString())));
+#pragma warning restore CS8604 // Possible null reference argument.
+                        }
+                        else
+                        {
+                            throw new JsonException($"Failed to deserialize context of type {s.ValueKind}");
+                        }
                     }
                 }
 
                 return context;
             }
 
-            while(reader.Read())
+            while (reader.Read())
             {
-                if(reader.TokenType == JsonTokenType.EndObject)
+                if (reader.TokenType == JsonTokenType.EndObject)
                 {
                     return context;
                 }
 
-                if(reader.TokenType != JsonTokenType.PropertyName)
+                if (reader.TokenType != JsonTokenType.PropertyName)
                 {
                     throw new JsonException("JsonTokenType was not PropertyName");
                 }
 
                 var propertyName = reader.GetString();
-                if(string.IsNullOrWhiteSpace(propertyName))
+                if (string.IsNullOrWhiteSpace(propertyName))
                 {
                     throw new JsonException("Failed to get property name");
                 }
 
                 _ = reader.Read();
-                object? val = ExtractValue(ref reader, propertyName, options);
-                if(val != null)
+                var val = ExtractValue(ref reader, propertyName, options);
+                if (val != null)
                 {
                     context.AdditionalData.Add(propertyName, val);
                 }
@@ -90,36 +105,48 @@ namespace DidNet.Json.SystemText
 
         public override void Write(Utf8JsonWriter writer, IContext value, JsonSerializerOptions options)
         {
-            if(value?.Contexes?.Count == 1)
+            if (value?.Contexes?.Count == 1)
             {
-                writer.WriteStringValue(value.Contexes.ElementAt(0));
+                WriteContextData(value.Contexes.ElementAt(0), writer, options);
             }
-            else if(value?.Contexes?.Count > 1)
+            else if (value?.Contexes?.Count > 1)
             {
                 writer.WriteStartArray();
-                for(int i = 0; i < value?.Contexes.Count; ++i)
+                for (var i = 0; i < value?.Contexes.Count; ++i)
                 {
-                    writer.WriteStringValue(value.Contexes.ElementAt(i));
+                    WriteContextData(value.Contexes.ElementAt(i), writer, options);
                 }
 
                 writer.WriteEndArray();
             }
 
-            if(value?.AdditionalData?.Count > 0)
+            if (value?.AdditionalData?.Count > 0)
             {
                 JsonSerializer.Serialize(writer, value.AdditionalData);
             }
         }
 
+        private void WriteContextData(ContextData contextData, Utf8JsonWriter writer, JsonSerializerOptions options)
+        {
+            if (contextData.IsEmbeddedContexe && contextData.EmbeddedContexe != null)
+            {
+                var converter = (JsonConverter<IDictionary<string, string>>)options.GetConverter(typeof(IDictionary<string, string>));
+                converter.Write(writer, contextData.EmbeddedContexe, options);
+            }
+            else if (!contextData.IsEmbeddedContexe)
+            {
+                writer.WriteStringValue(contextData.Contexe);
+            }
+        }
 
         [return: MaybeNull]
         private static object? ExtractValue(ref Utf8JsonReader reader, string propertyName, JsonSerializerOptions options)
         {
             //https://github.com/dotnet/corefx/blob/master/src/System.Text.Json/src/System/Text/Json/Serialization/Converters/JsonValueConverterKeyValuePair.cs
-            switch(reader.TokenType)
+            switch (reader.TokenType)
             {
                 case JsonTokenType.String:
-                    if(reader.TryGetDateTime(out var date))
+                    if (reader.TryGetDateTime(out var date))
                     {
                         return date;
                     }
@@ -131,7 +158,7 @@ namespace DidNet.Json.SystemText
                 case JsonTokenType.Null:
                     return null;
                 case JsonTokenType.Number:
-                    if(reader.TryGetInt64(out var result))
+                    if (reader.TryGetInt64(out var result))
                     {
                         return result;
                     }
