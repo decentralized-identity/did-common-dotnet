@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace DidNet.Common
 {
@@ -8,7 +7,6 @@ namespace DidNet.Common
         public string? Endpoint { get; }
         public IDictionary<string, List<string>>? EmbeddedEndpoint { get; }
 
-        [JsonIgnore]
         public bool IsEmbeddedEndpoint { get { return EmbeddedEndpoint != null; } }
 
         public ServiceEndpointData(string endpoint) => Endpoint = endpoint;

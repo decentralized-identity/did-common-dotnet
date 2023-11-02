@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using DidNet.Common;
+using DidNet.Json.Newtonsoft.ModelExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -67,7 +68,7 @@ namespace DidNet.Json.Newtonsoft.Converters
                 {
                     return (IService)serviceJsonSerializer.Deserialize(new JTokenReader(jObject), targetType)!;
                 }
-                return serviceJsonSerializer.Deserialize<Service>(new JTokenReader(jObject))!;
+                return serviceJsonSerializer.Deserialize<ServiceExt>(new JTokenReader(jObject))!;
             }
             
             throw new JsonException($"No handler for service \"{serviceType}\" found.");

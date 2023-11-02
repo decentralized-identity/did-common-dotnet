@@ -231,7 +231,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
           //  Assert.NotNull(deseserializedDidDocument?.Context);
             Assert.NotNull(deseserializedDidDocument?.Service);
             Assert.NotNull(reserializedDidDocument);
-            Assert.IsType<Service>(deseserializedDidDocument!.Service![0]);
+            Assert.IsType<ServiceExt>(deseserializedDidDocument!.Service![0]);
 
             Assert.True(JToken.DeepEquals(JToken.Parse(didDocumentFileContents), JToken.Parse(reserializedDidDocument)));
         }

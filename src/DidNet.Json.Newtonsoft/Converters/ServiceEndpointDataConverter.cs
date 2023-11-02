@@ -2,7 +2,6 @@ using DidNet.Common;
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DidNet.Json.Newtonsoft.Converters

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DidNet.Common;
-using JsonLD.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

@@ -86,7 +86,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                 DefaultValueHandling = DefaultValueHandling.Ignore,
                 Converters = new JsonConverter[]
                 {
-                    new Json.Newtonsoft.Converters.ServiceConverter<Service>(),
+                    new Json.Newtonsoft.Converters.ServiceConverter<ServiceExt>(),
                     new Json.Newtonsoft.Converters.ServiceEndpointDataConverter()
                 }
             };
