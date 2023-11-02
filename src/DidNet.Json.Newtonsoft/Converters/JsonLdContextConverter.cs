@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DidNet.Common;
+using JsonLD.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -18,14 +19,14 @@ namespace DidNet.Json.Newtonsoft.Converters
         {
             if (value?.Contexes?.Count == 1)
             {
-                writer.WriteValue(value.Contexes.ElementAt(0));
+                WriteContextData(value.Contexes.ElementAt(0), writer, serializer);
             }
             else if (value?.Contexes?.Count > 1)
             {
                 writer.WriteStartArray();
                 for (var i = 0; i < value?.Contexes.Count; ++i)
                 {
-                    writer.WriteValue(value.Contexes.ElementAt(i));
+                    WriteContextData(value.Contexes.ElementAt(i), writer, serializer);
                 }
 
                 writer.WriteEndArray();
@@ -41,16 +42,18 @@ namespace DidNet.Json.Newtonsoft.Converters
             bool hasExistingValue,
             JsonSerializer serializer)
         {
-            var context = new TContext();
-         
+            var context = new TContext
+            {
+                Contexes = new List<ContextData>()
+            };
+
             if (reader.TokenType == JsonToken.String)
             {
-                context.Contexes = new List<string>();
                 var singleContext = serializer.Deserialize<string>(reader);
                 //Should check and validate the context name to be "https://www.w3.org/ns/did/v1"
                 if (singleContext != null)
                 {
-                    context.Contexes.Add(singleContext);
+                    context.Contexes.Add(new ContextData(singleContext));
                 }
 
                 return context;
@@ -58,11 +61,27 @@ namespace DidNet.Json.Newtonsoft.Converters
 
             if (reader.TokenType == JsonToken.StartArray)
             {
-                var multipleContexts = serializer.Deserialize<string[]>(reader);
+                var multipleContexts = serializer.Deserialize<JToken[]>(reader);
                 //Should check and validate the context name to be "https://www.w3.org/ns/did/v1"
                 if (multipleContexts != null)
                 {
-                    context.Contexes = new List<string>(multipleContexts);
+                    foreach(var obj in multipleContexts)
+                    {
+                        if (obj.Type.Equals(JTokenType.String))
+                        {
+                            context.Contexes.Add(new ContextData(obj.ToString()));
+                        }
+                        else if (obj.Type.Equals(JTokenType.Object))
+                        {
+#pragma warning disable CS8604 // Possible null reference argument.
+                            context.Contexes.Add(new ContextData(obj.ToObject<IDictionary<string, string>>()));
+#pragma warning restore CS8604 // Possible null reference argument.
+                        }
+                        else
+                        {
+                            throw new JsonException($"Failed to deserialize context of type {obj.Type}");
+                        }
+                    }
                 }
 
                 return context;
@@ -77,6 +96,17 @@ namespace DidNet.Json.Newtonsoft.Converters
             }
             return context;
 
+        }
+        private void WriteContextData(ContextData contextData, JsonWriter writer, JsonSerializer serializer)
+        {
+            if (contextData.IsEmbeddedContexe && contextData.EmbeddedContexe != null)
+            {
+                serializer.Serialize(writer, contextData.EmbeddedContexe);
+            }
+            else if (!contextData.IsEmbeddedContexe)
+            {
+                writer.WriteValue(contextData.Contexe);
+            }
         }
     }
 }

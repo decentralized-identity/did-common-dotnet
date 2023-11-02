@@ -1,19 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Text.Json;
-using DidNet.Common.Tests.DidJsonParsing.SystemText;
 using DidNet.Json.Newtonsoft.Converters;
 using DidNet.Json.SystemText;
+using DidNet.Json.SystemText.Converters;
 using DidNet.Json.SystemText.ModelExt;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
 {
@@ -77,18 +68,29 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
         [Fact]
         public void RoundtripServiceTest1()
         {
-            var service = JsonConvert.DeserializeObject<ServiceExt>(TestService1);
+            var settings = new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore,
+                Converters = new JsonConverter[]
+                {
+                    new Json.Newtonsoft.Converters.ServiceConverter<Service>(),
+                    new Json.Newtonsoft.Converters.ServiceEndpointDataConverter()
+                }
+            };
+
+            var service = JsonConvert.DeserializeObject<Service>(TestService1, settings);
             Assert.NotNull(service);
 
-            var roundTrippedJson = JsonConvert.SerializeObject(service);
+            var roundTrippedJson = JsonConvert.SerializeObject(service, settings);
             Assert.NotNull(roundTrippedJson);
 
             Assert.True(JToken.DeepEquals(JToken.Parse(TestService1), JToken.Parse(roundTrippedJson)));
         }
-
         
 
-       [Fact]
+
+[Fact]
        public void RoundtripOneUriContext()
         {
             var settings = new JsonSerializerSettings()
