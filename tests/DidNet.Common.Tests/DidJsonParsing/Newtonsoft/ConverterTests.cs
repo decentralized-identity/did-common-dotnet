@@ -22,6 +22,18 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                 ""serviceEndpoint"": ""https://openid.example.com/"" }";
 
         /// <summary>
+        /// A test service with an endpoint object.
+        /// </summary>
+        private string TestService2 => @"{
+                ""id"": ""did:example:123456789abcdefghi#oidc"",
+                ""type"": ""OpenIdConnectVersion1.0Service"",
+                ""serviceEndpoint"": {
+                    ""origins"": [
+                        ""https://openid.example.com/""
+                    ]
+                }}";
+
+        /// <summary>
         /// The DID Uri from https://www.w3.org/TR/did-core/.
         /// </summary>
         private string OneUriContext => @"{""@context"": ""https://www.w3.org/ns/did/v1""}";
@@ -87,10 +99,32 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
 
             Assert.True(JToken.DeepEquals(JToken.Parse(TestService1), JToken.Parse(roundTrippedJson)));
         }
-        
+
+        [Fact]
+        public void RoundtripServiceTest2()
+        {
+            var settings = new JsonSerializerSettings()
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore,
+                Converters = new JsonConverter[]
+                {
+                    new Json.Newtonsoft.Converters.ServiceConverter<Service>(),
+                    new Json.Newtonsoft.Converters.ServiceEndpointDataConverter()
+                }
+            };
+
+            var service = JsonConvert.DeserializeObject<Service>(TestService2, settings);
+            Assert.NotNull(service);
+
+            var roundTrippedJson = JsonConvert.SerializeObject(service, settings);
+            Assert.NotNull(roundTrippedJson);
+
+            Assert.True(JToken.DeepEquals(JToken.Parse(TestService2), JToken.Parse(roundTrippedJson)));
+        }
 
 
-[Fact]
+        [Fact]
        public void RoundtripOneUriContext()
         {
             var settings = new JsonSerializerSettings()
