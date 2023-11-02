@@ -38,7 +38,7 @@ namespace DidNet.Json.Newtonsoft
         {
             return new JsonConverter[]
             {
-                new JsonLdContextConverter<Context>(),
+                new JsonLdContextConverter<ContextObj>(),
                 new VerificationMethodConverter(),
                 new ServiceConverter<Service>(),
             };

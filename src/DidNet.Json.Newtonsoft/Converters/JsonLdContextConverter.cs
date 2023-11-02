@@ -17,16 +17,16 @@ namespace DidNet.Json.Newtonsoft.Converters
     {
         public override void WriteJson(JsonWriter writer, IContext value, JsonSerializer serializer)
         {
-            if (value?.Contexes?.Count == 1)
+            if (value?.Contexts?.Count == 1)
             {
-                WriteContextData(value.Contexes.ElementAt(0), writer, serializer);
+                WriteContextData(value.Contexts.ElementAt(0), writer, serializer);
             }
-            else if (value?.Contexes?.Count > 1)
+            else if (value?.Contexts?.Count > 1)
             {
                 writer.WriteStartArray();
-                for (var i = 0; i < value?.Contexes.Count; ++i)
+                for (var i = 0; i < value?.Contexts.Count; ++i)
                 {
-                    WriteContextData(value.Contexes.ElementAt(i), writer, serializer);
+                    WriteContextData(value.Contexts.ElementAt(i), writer, serializer);
                 }
 
                 writer.WriteEndArray();
@@ -44,7 +44,7 @@ namespace DidNet.Json.Newtonsoft.Converters
         {
             var context = new TContext
             {
-                Contexes = new List<ContextData>()
+                Contexts = new List<ContextData>()
             };
 
             if (reader.TokenType == JsonToken.String)
@@ -53,7 +53,7 @@ namespace DidNet.Json.Newtonsoft.Converters
                 //Should check and validate the context name to be "https://www.w3.org/ns/did/v1"
                 if (singleContext != null)
                 {
-                    context.Contexes.Add(new ContextData(singleContext));
+                    context.Contexts.Add(new ContextData(singleContext));
                 }
 
                 return context;
@@ -69,12 +69,12 @@ namespace DidNet.Json.Newtonsoft.Converters
                     {
                         if (obj.Type.Equals(JTokenType.String))
                         {
-                            context.Contexes.Add(new ContextData(obj.ToString()));
+                            context.Contexts.Add(new ContextData(obj.ToString()));
                         }
                         else if (obj.Type.Equals(JTokenType.Object))
                         {
 #pragma warning disable CS8604 // Possible null reference argument.
-                            context.Contexes.Add(new ContextData(obj.ToObject<IDictionary<string, string>>()));
+                            context.Contexts.Add(new ContextData(obj.ToObject<IDictionary<string, string>>()));
 #pragma warning restore CS8604 // Possible null reference argument.
                         }
                         else
@@ -99,13 +99,13 @@ namespace DidNet.Json.Newtonsoft.Converters
         }
         private void WriteContextData(ContextData contextData, JsonWriter writer, JsonSerializer serializer)
         {
-            if (contextData.IsEmbeddedContexe && contextData.EmbeddedContexe != null)
+            if (contextData.IsEmbeddedContext && contextData.EmbeddedContext != null)
             {
-                serializer.Serialize(writer, contextData.EmbeddedContexe);
+                serializer.Serialize(writer, contextData.EmbeddedContext);
             }
-            else if (!contextData.IsEmbeddedContexe)
+            else if (!contextData.IsEmbeddedContext)
             {
-                writer.WriteValue(contextData.Contexe);
+                writer.WriteValue(contextData.Context);
             }
         }
     }

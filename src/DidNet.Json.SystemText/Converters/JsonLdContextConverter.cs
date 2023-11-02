@@ -21,7 +21,7 @@ namespace DidNet.Json.SystemText
         {
             //The DID JSON-LD context starts either with a single string, array of strings or is an object that can
             //contain whatever elements.
-            var context = new Context { Contexes = new Collection<ContextData>(), AdditionalData = new Dictionary<string, object>() };
+            var context = new ContextObj { Contexts = new Collection<ContextData>(), AdditionalData = new Dictionary<string, object>() };
             var tokenType = reader.TokenType;
             if (reader.TokenType == JsonTokenType.PropertyName)
             {
@@ -37,7 +37,7 @@ namespace DidNet.Json.SystemText
                 var ctx = reader.GetString();
                 if (ctx != null)
                 {
-                    context.Contexes.Add(new ContextData(ctx));
+                    context.Contexts.Add(new ContextData(ctx));
                 }
 
                 return context;
@@ -54,13 +54,13 @@ namespace DidNet.Json.SystemText
                         if (s.ValueKind.Equals(JsonValueKind.String))
                         {
 #pragma warning disable CS8604 // Possible null reference argument.
-                            context.Contexes.Add(new ContextData(context: s.GetString()));
+                            context.Contexts.Add(new ContextData(context: s.GetString()));
 #pragma warning restore CS8604 // Possible null reference argument.
                         }
                         else if (s.ValueKind.Equals(JsonValueKind.Object))
                         {
 #pragma warning disable CS8604 // Possible null reference argument.
-                            context.Contexes.Add(new ContextData(JsonSerializer.Deserialize<Dictionary<string, string>>(s.GetString())));
+                            context.Contexts.Add(new ContextData(JsonSerializer.Deserialize<Dictionary<string, string>>(s.GetString())));
 #pragma warning restore CS8604 // Possible null reference argument.
                         }
                         else
@@ -105,16 +105,16 @@ namespace DidNet.Json.SystemText
 
         public override void Write(Utf8JsonWriter writer, IContext value, JsonSerializerOptions options)
         {
-            if (value?.Contexes?.Count == 1)
+            if (value?.Contexts?.Count == 1)
             {
-                WriteContextData(value.Contexes.ElementAt(0), writer, options);
+                WriteContextData(value.Contexts.ElementAt(0), writer, options);
             }
-            else if (value?.Contexes?.Count > 1)
+            else if (value?.Contexts?.Count > 1)
             {
                 writer.WriteStartArray();
-                for (var i = 0; i < value?.Contexes.Count; ++i)
+                for (var i = 0; i < value?.Contexts.Count; ++i)
                 {
-                    WriteContextData(value.Contexes.ElementAt(i), writer, options);
+                    WriteContextData(value.Contexts.ElementAt(i), writer, options);
                 }
 
                 writer.WriteEndArray();
@@ -128,14 +128,14 @@ namespace DidNet.Json.SystemText
 
         private void WriteContextData(ContextData contextData, Utf8JsonWriter writer, JsonSerializerOptions options)
         {
-            if (contextData.IsEmbeddedContexe && contextData.EmbeddedContexe != null)
+            if (contextData.IsEmbeddedContext && contextData.EmbeddedContext != null)
             {
                 var converter = (JsonConverter<IDictionary<string, string>>)options.GetConverter(typeof(IDictionary<string, string>));
-                converter.Write(writer, contextData.EmbeddedContexe, options);
+                converter.Write(writer, contextData.EmbeddedContext, options);
             }
-            else if (!contextData.IsEmbeddedContexe)
+            else if (!contextData.IsEmbeddedContext)
             {
-                writer.WriteStringValue(contextData.Contexe);
+                writer.WriteStringValue(contextData.Context);
             }
         }
 

@@ -133,7 +133,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                 DefaultValueHandling = DefaultValueHandling.Ignore,
                 Converters = new JsonConverter[]
                 {
-                    new JsonLdContextConverter<Context>()
+                    new JsonLdContextConverter<ContextObj>()
                 }
             };
 
@@ -156,7 +156,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                 DefaultValueHandling = DefaultValueHandling.Ignore,
                 Converters = new JsonConverter[]
                 {
-                    new JsonLdContextConverter<Context>()
+                    new JsonLdContextConverter<ContextObj>()
                 }
             };
 
@@ -179,7 +179,7 @@ namespace DidNet.Common.Tests.DidJsonParsing.Newtonsoft
                 DefaultValueHandling = DefaultValueHandling.Ignore,
                 Converters = new JsonConverter[]
                 {
-                    new JsonLdContextConverter<Context>()
+                    new JsonLdContextConverter<ContextObj>()
                 }
             };
 
