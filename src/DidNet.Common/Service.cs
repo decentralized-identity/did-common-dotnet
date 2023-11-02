@@ -20,7 +20,7 @@ namespace DidNet.Common
         public virtual string? Type { get; set; }
 
         [DataMember(Name ="serviceEndpoint")]
-        public virtual string? ServiceEndpoint { get; set; }
+        public virtual ServiceEndpointData? ServiceEndpoint { get; set; }
 
         public virtual IDictionary<string, object>? AdditionalData { get; set; }
     }

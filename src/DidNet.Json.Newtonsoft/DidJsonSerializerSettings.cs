@@ -1,11 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using DidNet.Common;
 using DidNet.Json.Newtonsoft.Converters;
 using DidNet.Json.Newtonsoft.Converters.Builders;
-using DidNet.Json.Newtonsoft.ModelExt;
 using Newtonsoft.Json;
 
 namespace DidNet.Json.Newtonsoft
@@ -41,8 +38,9 @@ namespace DidNet.Json.Newtonsoft
         {
             return new JsonConverter[]
             {
-                new JsonLdContextConverter<Context>(),
-                new VerificationMethodConverter()
+                new JsonLdContextConverter<ContextObj>(),
+                new VerificationMethodConverter(),
+                new ServiceConverter<Service>(),
             };
         }
     }

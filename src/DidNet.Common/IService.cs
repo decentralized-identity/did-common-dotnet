@@ -6,6 +6,6 @@ namespace DidNet.Common
     {
         Uri? Id { get; set; }
         string? Type { get; set; }
-        string? ServiceEndpoint { get; set; }
+        ServiceEndpointData? ServiceEndpoint { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace DidNet.Json.SystemText.ModelExt
         public override string? Type { get; set; }
 
         [JsonPropertyName("serviceEndpoint")]
-        public override string? ServiceEndpoint { get; set; }
+        public override ServiceEndpointData? ServiceEndpoint { get; set; }
 
         [JsonExtensionData]
         public override IDictionary<string, object>? AdditionalData { get; set; }

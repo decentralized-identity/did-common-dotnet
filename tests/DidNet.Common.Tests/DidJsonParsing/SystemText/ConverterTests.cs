@@ -19,6 +19,18 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
                 ""serviceEndpoint"": ""https://openid.example.com/"" }";
 
         /// <summary>
+        /// A test service with an endpoint object.
+        /// </summary>
+        private string TestService2 => @"{
+                ""id"": ""did:example:123456789abcdefghi#oidc"",
+                ""type"": ""OpenIdConnectVersion1.0Service"",
+                ""serviceEndpoint"": {
+                    ""origins"": [
+                        ""https://openid.example.com/""
+                    ]
+                }}";
+
+        /// <summary>
         /// The DID Uri from https://www.w3.org/TR/did-core/.
         /// </summary>
         private string OneUriContext => @"{""@context"": ""https://www.w3.org/ns/did/v1""}";
@@ -73,6 +85,24 @@ namespace DidNet.Common.Tests.DidJsonParsing.SystemText
 
             var comparer = new JsonElementComparer();
             using var doc1 = JsonDocument.Parse(TestService1);
+            using var doc2 = JsonDocument.Parse(roundTrippedJson);
+            Assert.True(comparer.Equals(doc1.RootElement, doc2.RootElement));
+        }
+
+        [Fact]
+        public void RoundtripServiceTest2()
+        {
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new ServiceConverterFactory());
+
+            Service? service = JsonSerializer.Deserialize<Service>(TestService2, options);
+            Assert.NotNull(service);
+
+            var roundTrippedJson = JsonSerializer.Serialize(service, options);
+            Assert.NotNull(roundTrippedJson);
+
+            var comparer = new JsonElementComparer();
+            using var doc1 = JsonDocument.Parse(TestService2);
             using var doc2 = JsonDocument.Parse(roundTrippedJson);
             Assert.True(comparer.Equals(doc1.RootElement, doc2.RootElement));
         }
